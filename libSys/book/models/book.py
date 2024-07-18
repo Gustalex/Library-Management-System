@@ -17,6 +17,10 @@ class Book(FactoryModel):
         self.book_status='Borrowed'
         self.save()
     
+    def return_book(self):
+        self.book_status='Avaliable'
+        self.save()
+    
     def __str__(self) -> str: 
         return self.title
     
