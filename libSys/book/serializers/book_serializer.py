@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from libSys.book.models.book import Book
+from book.models import Book
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:

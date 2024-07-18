@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from libSys.book.models.genre import Genre
+from book.models import Genre
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
