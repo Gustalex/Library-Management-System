@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     #my_apps
     'book',
     'book_services',
+    'user',
 ]
 
 MIDDLEWARE = [
