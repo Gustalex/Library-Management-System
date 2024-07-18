@@ -1,6 +1,6 @@
 from django.db import models
 
-from models import FactoryModel
+from book_services.models import FactoryModel
 from book.models import Book
 
 class Popularity(FactoryModel):
