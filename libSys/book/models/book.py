@@ -10,15 +10,15 @@ class Book(FactoryModel):
     status=models.CharField(max_length=30, default='Avaliable')
     
     def reserve_book(self):
-        self.book_status='Reserved'
+        self.status='Reserved'
         self.save()
     
     def borrow_book(self):
-        self.book_status='Borrowed'
+        self.status='Borrowed'
         self.save()
     
     def return_book(self):
-        self.book_status='Avaliable'
+        self.status='Avaliable'
         self.save()
     
     def __str__(self) -> str: 
