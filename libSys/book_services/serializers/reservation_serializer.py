@@ -8,6 +8,6 @@ class ReservationSerializer(serializers.ModelSerializer):
         model=Reservation
         fields=[
             'id',
-            'id_book',
-            'id_customer'
+            'book',
+            'customer'
         ]

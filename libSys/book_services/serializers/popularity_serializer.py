@@ -8,7 +8,7 @@ class PopularitySerializer(serializers.ModelSerializer):
         model=Popularity
         fields=[
             'id',
-            'id_book',
+            'book',
             'borrow_count'
         ]
     

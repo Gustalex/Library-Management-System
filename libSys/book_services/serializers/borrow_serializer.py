@@ -8,8 +8,8 @@ class BorrowSerializer(serializers.ModelSerializer):
         model=Borrow
         fields=[
             'id',
-            'id_book',
-            'id_customer',
+            'book',
+            'customer',
             'initial_date',
             'final_date'
         ]
