@@ -1,17 +1,12 @@
-from django.urls import path, include, re_path
-
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-
-from book.views import BookViewSet, GenreViewSet
+from book.views import BookViewSet, GenreViewSet, UpdateStatusBookViewSet
 
 router = DefaultRouter()
-
 router.register(r'book', BookViewSet, basename='book')
 router.register(r'genre', GenreViewSet, basename='genre')
+router.register(r'book-status', UpdateStatusBookViewSet, basename='book-status')
 
-urlpatterns = [     
-    re_path(r'^', include(router.urls)),
+urlpatterns = [
+    path('', include(router.urls)),
 ]
-
-
-

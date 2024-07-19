@@ -12,4 +12,9 @@ class BookSerializer(serializers.ModelSerializer):
             'id_genre',
             'book_status'
         ]
-        
+
+class UpdateStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Book
+        fields=[]
+
