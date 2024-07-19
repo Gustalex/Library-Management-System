@@ -21,7 +21,7 @@ class UpdateStatusBookViewSet(ViewSet):
     queryset = Book.objects.all()
     serializer_class = UpdateStatusSerializer
 
-    @action(detail=True, methods=['put'])
+    @action(detail=True, methods=['PUT'])
     def change_status_reserve_book(self, request, pk=None):
         try:
             book = Book.objects.get(pk=pk)
@@ -31,7 +31,7 @@ class UpdateStatusBookViewSet(ViewSet):
         book.reserve_book()
         return return_response(request, status.HTTP_200_OK, {'message': 'Book reserved'})
 
-    @action(detail=True, methods=['put'])
+    @action(detail=True, methods=['PUT'])
     def change_status_borrow_book(self, request, pk=None):
         try:
             book = Book.objects.get(pk=pk)
@@ -43,7 +43,7 @@ class UpdateStatusBookViewSet(ViewSet):
         book.borrow_book()
         return return_response(request, status.HTTP_200_OK, {'message': 'Book borrowed'})
 
-    @action(detail=True, methods=['put'])
+    @action(detail=True, methods=['PUT'])
     def change_status_return_book(self, request, pk=None):
         try:
             book = Book.objects.get(pk=pk)
