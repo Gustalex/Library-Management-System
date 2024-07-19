@@ -3,8 +3,8 @@ from book.models import Book
 from book_services.models import FactoryModel
 
 class Reservation(FactoryModel):
-    id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    id_customer = models.ForeignKey('user.Customer', on_delete=models.CASCADE, related_name='reservation_set')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    customer = models.ForeignKey('user.Customer', on_delete=models.CASCADE, related_name='reservation_set')
     
     class Meta:
         db_table = 'reservations'
@@ -12,6 +12,6 @@ class Reservation(FactoryModel):
         verbose_name_plural = 'Reservations'
         
     def cancel_reservation(self):
-        book = self.id_book
+        book = self.book
         book.return_book()
         self.delete()

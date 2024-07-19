@@ -6,8 +6,8 @@ from book.models.genre import Genre
 class Book(FactoryModel):
     title=models.CharField(max_length=100)
     author=models.CharField(max_length=50)
-    id_genre=models.ForeignKey(Genre, on_delete=models.CASCADE)
-    book_status=models.CharField(max_length=30, default='Avaliable')
+    genre=models.ForeignKey(Genre, on_delete=models.CASCADE)
+    status=models.CharField(max_length=30, default='Avaliable')
     
     def reserve_book(self):
         self.book_status='Reserved'

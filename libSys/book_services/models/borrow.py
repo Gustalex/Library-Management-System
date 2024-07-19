@@ -9,8 +9,8 @@ def validate_date(value):
         raise ValidationError('Please enter a valid date')
     
 class Borrow(FactoryModel):
-    id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    id_customer = models.ForeignKey('user.Customer', on_delete=models.CASCADE, related_name='borrow_set')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    customer = models.ForeignKey('user.Customer', on_delete=models.CASCADE, related_name='borrow_set')
     initial_date = models.DateField()
     final_date = models.DateField(validators=[validate_date])
     
@@ -24,6 +24,6 @@ class Borrow(FactoryModel):
             raise ValidationError('The initial date must be less than the final date')
     
     def cancel_borrow(self):
-        book = self.id_book
+        book = self.book
         book.return_book()
         self.delete()
