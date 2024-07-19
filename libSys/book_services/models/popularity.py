@@ -4,7 +4,7 @@ from book_services.models import FactoryModel
 from book.models import Book
 
 class Popularity(FactoryModel):
-    id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     borrow_count = models.IntegerField(default=0)
     
     class Meta:
