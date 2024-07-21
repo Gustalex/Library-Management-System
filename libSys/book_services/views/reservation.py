@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import action
 from rest_framework import status
+from django.db import transaction
 
 from book_services.helper import return_response
 from book_services.models import Reservation
@@ -20,17 +21,17 @@ class ReservationViewSet(ViewSet):
         except Customer.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Customer not found'})
 
-        if book.status in ['Reserved', 'Borrowed']:
-            if book.status == 'Reserved':
-                return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already reserved'})
-            return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already borrowed'})
-        
-        reservation = Reservation.objects.create(book=book, customer=customer)
-        book.reserve_book()
-        
-        return return_response(request, status.HTTP_200_OK, {'message': 'Book reserved', 'reservation_id': reservation.id})
+        with transaction.atomic():
+            if book.status in ['Reserved', 'Borrowed']:
+                if book.status == 'Reserved':
+                    return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already reserved'})
+                return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already borrowed'})
+            
+            reservation = Reservation.objects.create(book=book, customer=customer)
+            book.reserve_book()
+            
+            return return_response(request, status.HTTP_200_OK, {'message': 'Book reserved', 'reservation_id': reservation.id})
 
-    
     @action(detail=True, methods=['DELETE'])
     def cancel_reservation(self, request, pk=None):
         try:
@@ -41,4 +42,3 @@ class ReservationViewSet(ViewSet):
         reservation.cancel_reservation()
         
         return return_response(request, status.HTTP_200_OK, {'message': 'Reservation canceled'})
-
