@@ -10,7 +10,7 @@ from book.models import Book
 
 class ReservationViewSet(ViewSet):
     
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['POST'])
     def do_reservation(self, request):
         try:
             book = Book.objects.get(id=request.data['book_id'])
@@ -29,3 +29,16 @@ class ReservationViewSet(ViewSet):
         book.reserve_book()
         
         return return_response(request, status.HTTP_200_OK, {'message': 'Book reserved', 'reservation_id': reservation.id})
+
+    
+    @action(detail=True, methods=['DELETE'])
+    def cancel_reservation(self, request, pk=None):
+        try:
+            reservation = Reservation.objects.get(id=pk)
+        except Reservation.DoesNotExist:
+            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Reservation not found'})
+        
+        reservation.cancel_reservation()
+        
+        return return_response(request, status.HTTP_200_OK, {'message': 'Reservation canceled'})
+
