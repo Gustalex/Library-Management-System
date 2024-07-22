@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework import status
 from django.db import transaction
 
-from book_services.helper import return_response
+from book_services.helper import return_response, find_reservation_by_book_and_customer
 from book_services.models import Borrow, Reservation
 from user.models import Customer
 from book.models import Book
@@ -19,16 +19,7 @@ class BorrowViewSet(ViewSet):
         
         reservations = Reservation.objects.filter(book=book, customer=customer, is_deleted=False)
         return reservations.exists()
-    
-    def find_reservation_by_book_and_customer(self, book_id, customer_id):
-        try:
-            book = Book.objects.get(id=book_id)
-            customer = Customer.objects.get(id=customer_id)
-        except (Book.DoesNotExist, Customer.DoesNotExist):
-            return None
         
-        return Reservation.objects.filter(book=book, customer=customer, is_deleted=False).first()
-    
     def delete_reservation(self, reservation_id):
         try:
             reservation = Reservation.objects.get(id=reservation_id)
@@ -54,7 +45,7 @@ class BorrowViewSet(ViewSet):
                     if self.check_if_book_is_reserved_by_customer(book.id, customer.id):
                         borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
                         book.borrow_book()
-                        reservation = self.find_reservation_by_book_and_customer(book.id, customer.id)
+                        reservation = find_reservation_by_book_and_customer(book.id, customer.id)
                         if reservation:
                             self.delete_reservation(reservation.id)
                         return return_response(request, status.HTTP_200_OK, {'message': 'Book borrowed', 'borrow_id': borrow.id})
