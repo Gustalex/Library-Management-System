@@ -186,33 +186,64 @@ a {
     overflow: hidden;
     width: fit-content;
 }
-  
-.book img {
-    max-width: 100%;
+
+.book-cover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 1rem;
 }
-  
+
+.book img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
 .book-list-item {
     max-width: 64rem;
     height: fit-content;
 }
-  
+
 .book-list-item:hover {
     transform: scale(1.02);
     box-shadow: -8px 8px 18px rgba(0, 0, 0, 0.25);
 }
-  
+
 .book-title-container {
     padding: var(--spacing-gutter-medium);
     padding-bottom: 2rem;
 }
-  
+
 .book-title-container a {
     text-decoration: none;
     color: var(--color-primary-dark);
 }
-  
+
 .book-author {
     padding: 0 var(--spacing-gutter-medium);
     padding-bottom: var(--spacing-gutter-medium);
+}
+
+.book-footer {
+    padding: var(--spacing-gutter-medium);
+}
+
+.book-author-item i {
+    margin-right: 0.5rem;
+}
+
+.book-read-more.button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0.75rem;
+    text-decoration: none;
+    color: var(--color-white);
+    background-color: var(--color-primary-dark);
+    border-radius: 0.4rem;
+    transition: background-color 300ms ease-in-out;
+}
+
+.book-read-more.button:hover {
+    background-color: var(--color-primary);
 }
