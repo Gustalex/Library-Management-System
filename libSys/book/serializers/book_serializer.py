@@ -10,7 +10,8 @@ class BookSerializer(serializers.ModelSerializer):
             'title',
             'author',
             'genre',
-            'status'
+            'status',
+            'synopsis'
         ]
 
 class UpdateStatusSerializer(serializers.ModelSerializer):
