@@ -5,7 +5,7 @@ from book_services.models import FactoryModel
 class Reservation(FactoryModel):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     customer = models.ForeignKey('user.Customer', on_delete=models.CASCADE, related_name='reservation_set')
-    
+    active = models.BooleanField(default=True)
     class Meta:
         db_table = 'reservations'
         verbose_name = 'Reservation'
@@ -14,4 +14,8 @@ class Reservation(FactoryModel):
     def cancel_reservation(self):
         book = self.book
         book.return_book()
-        self.delete()
+        self.active = False
+    
+    def inactivate_reservation(self):
+        self.active = False
+        self.save()

@@ -33,12 +33,12 @@ class ReservationViewSet(ViewSet):
             return return_response(request, status.HTTP_200_OK, {'message': 'Book reserved', 'reservation_id': reservation.id})
 
     @action(detail=True, methods=['DELETE'])
-    def cancel_reservation(self, request, pk=None):
+    def delete_reservation(self, request, pk=None):
         try:
             reservation = Reservation.objects.get(id=pk)
         except Reservation.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Reservation not found'})
         
         reservation.cancel_reservation()
-        
+        reservation.delete()
         return return_response(request, status.HTTP_200_OK, {'message': 'Reservation canceled'})

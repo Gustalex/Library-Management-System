@@ -17,13 +17,13 @@ class BorrowViewSet(ViewSet):
         except (Book.DoesNotExist, Customer.DoesNotExist):
             return False
         
-        reservations = Reservation.objects.filter(book=book, customer=customer, is_deleted=False)
+        reservations = Reservation.objects.filter(book=book, customer=customer, active=True)
         return reservations.exists()
         
-    def delete_reservation(self, reservation_id):
+    def inactivate_reservation(self, reservation_id):
         try:
             reservation = Reservation.objects.get(id=reservation_id)
-            reservation.delete()
+            reservation.inactivate_reservation()
         except Reservation.DoesNotExist:
             return return_response(None, status.HTTP_404_NOT_FOUND, {'message': 'Reservation not found'})
     
@@ -47,7 +47,7 @@ class BorrowViewSet(ViewSet):
                         book.borrow_book()
                         reservation = find_reservation_by_book_and_customer(book.id, customer.id)
                         if reservation:
-                            self.delete_reservation(reservation.id)
+                            self.inactivate_reservation(reservation.id)
                         return return_response(request, status.HTTP_200_OK, {'message': 'Book borrowed', 'borrow_id': borrow.id})
                     return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already reserved by another customer'})
                 return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already borrowed'})
@@ -64,4 +64,5 @@ class BorrowViewSet(ViewSet):
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrow not found'})
         
         borrow.cancel_borrow()
+        borrow.delete()
         return return_response(request, status.HTTP_200_OK, {'message': 'Borrow deleted'})

@@ -17,7 +17,7 @@ class DevolutionViewSet(ViewSet):
         except (Book.DoesNotExist, Customer.DoesNotExist):
             return None
         
-        return Borrow.objects.filter(book=book, customer=customer, is_deleted=False).first()
+        return Borrow.objects.filter(book=book, customer=customer, active=True).first()
     
     def conclude_borrow(self, borrow_id):
         try:
@@ -25,7 +25,8 @@ class DevolutionViewSet(ViewSet):
         except Borrow.DoesNotExist:
             return None
         
-        borrow.delete()
+        borrow.cancel_borrow()
+        borrow.active = False
         return borrow
     
     @action(detail=True, methods=['PATCH'])
@@ -43,7 +44,6 @@ class DevolutionViewSet(ViewSet):
             
             if borrow:
                 self.conclude_borrow(borrow.id)
-                book.return_book()
                 return return_response(request, status.HTTP_200_OK, {'message': 'Book returned successfully'})
             
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrow not found'})
