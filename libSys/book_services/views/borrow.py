@@ -63,6 +63,8 @@ class BorrowViewSet(ViewSet):
         except Borrow.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrow not found'})
         
+        borrow.active = False 
         borrow.cancel_borrow()
+        borrow.save()
         borrow.delete()
         return return_response(request, status.HTTP_200_OK, {'message': 'Borrow deleted'})

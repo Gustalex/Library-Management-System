@@ -27,6 +27,7 @@ class DevolutionViewSet(ViewSet):
         
         borrow.cancel_borrow()
         borrow.active = False
+        borrow.save(update_fields=['active'])
         return borrow
     
     @action(detail=True, methods=['PATCH'])

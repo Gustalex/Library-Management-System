@@ -24,7 +24,8 @@ class Borrow(FactoryModel):
             raise ValidationError('The initial date must be less than the final date')
     
     def cancel_borrow(self):
-        self.active = False
         book = self.book
         book.return_book()
+        self.active = False
+        self.save()
         

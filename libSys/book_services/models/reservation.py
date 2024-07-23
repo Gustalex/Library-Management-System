@@ -15,7 +15,8 @@ class Reservation(FactoryModel):
         book = self.book
         book.return_book()
         self.active = False
+        self.save()
     
     def inactivate_reservation(self):
         self.active = False
-        self.save()
+        self.save(update_fields=['active'])
