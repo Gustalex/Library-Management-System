@@ -7,6 +7,7 @@ class Book(FactoryModel):
     title=models.CharField(max_length=100)
     author=models.CharField(max_length=50)
     genre=models.ForeignKey(Genre, on_delete=models.CASCADE)
+    edition=models.CharField(max_length=50, blank=True, null=True)
     status=models.CharField(max_length=30, default='Avaliable')
     synopsis=models.TextField(blank=True, null=True) 
     

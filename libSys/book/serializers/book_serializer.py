@@ -10,6 +10,7 @@ class BookSerializer(serializers.ModelSerializer):
             'title',
             'author',
             'genre',
+            'edition',
             'status',
             'synopsis'
         ]
