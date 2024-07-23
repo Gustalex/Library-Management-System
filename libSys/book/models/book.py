@@ -8,6 +8,7 @@ class Book(FactoryModel):
     author=models.CharField(max_length=50)
     genre=models.ForeignKey(Genre, on_delete=models.CASCADE)
     status=models.CharField(max_length=30, default='Avaliable')
+    synopsis=models.TextField(blank=True, null=True) 
     
     def reserve_book(self):
         self.status='Reserved'
