@@ -15,7 +15,7 @@ class Popularity(FactoryModel):
         
     def increment_borrow_count(self):
         self.borrow_count += 1
-        self.save()
+        self.save(update_fields=['borrow_count'])
     
     
     

@@ -2,13 +2,17 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import action
 from rest_framework import status
 from django.db import transaction
-
 from book_services.helper import return_response, find_reservation_by_book_and_customer
-from book_services.models import Borrow, Reservation
+from book_services.models import Borrow, Reservation, Popularity
 from user.models import Customer
 from book.models import Book
 
 class BorrowViewSet(ViewSet):
+
+    def update_popularity_by_book_id(self, book_id):
+        book = Book.objects.get(id=book_id)
+        popularity, created = Popularity.objects.get_or_create(book=book)
+        popularity.increment_borrow_count()
     
     def check_if_book_is_reserved_by_customer(self, book_id, customer_id):
         try:
@@ -45,6 +49,7 @@ class BorrowViewSet(ViewSet):
                     if self.check_if_book_is_reserved_by_customer(book.id, customer.id):
                         borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
                         book.borrow_book()
+                        self.update_popularity_by_book_id(book.id)
                         reservation = find_reservation_by_book_and_customer(book.id, customer.id)
                         if reservation:
                             self.inactivate_reservation(reservation.id)
@@ -54,6 +59,7 @@ class BorrowViewSet(ViewSet):
             
             borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
             book.borrow_book()
+            self.update_popularity_by_book_id(book.id)
             return return_response(request, status.HTTP_200_OK, {'message': 'Book borrowed', 'borrow_id': borrow.id})
     
     @action(detail=True, methods=['DELETE'])
