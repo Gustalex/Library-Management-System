@@ -50,7 +50,7 @@ class BorrowViewSet(ViewSet):
                             self.inactivate_reservation(reservation.id)
                         return return_response(request, status.HTTP_200_OK, {'message': 'Book borrowed', 'borrow_id': borrow.id})
                     return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already reserved by another customer'})
-                return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already borrowed'})
+                return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already borrowed by another customer'})
             
             borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
             book.borrow_book()
