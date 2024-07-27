@@ -164,6 +164,13 @@ a {
     color: var(--color-primary);
 }
 
+.popular-books-intro{
+    padding-top: 4rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-dark-text);
+    margin-bottom: 1rem;
+}
+
 .main-content {
     padding-top: 0;
 }
@@ -312,7 +319,6 @@ a {
 
 .book-author {
     padding: 0 var(--spacing-gutter-medium);
-    padding-bottom: var(--spacing-gutter-medium);
 }
 
 .book-footer {
