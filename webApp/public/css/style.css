@@ -71,6 +71,9 @@ h6 {
 header {
     display: flex;
     justify-content: center;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
 }
 
 a {
@@ -101,8 +104,21 @@ a {
     margin: 0 auto;
 }
   
+.main-logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-white); 
+}
+
 .main-logo-icon {
-    margin-right: 2rem;
+    margin-right: 2rem; 
+    font-size: 4rem; 
+}
+
+.main-logo-text {
+    font-size: 2rem;
+    font-weight: bold;
 }
   
 .search-form {
@@ -151,12 +167,87 @@ a {
 .main-content {
     padding-top: 0;
 }
-  
+
+.main-content-container {
+    margin-left: 15rem;
+    padding: var(--spacing-gutter-medium);
+    padding-top: 10rem;
+}
+
 .main-content-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     gap: var(--spacing-gutter-large);
 }
+
+.sidebar {
+    position: fixed; /* Fixa a sidebar na tela */
+    top: 0;
+    left: -15rem; /* Coloca a sidebar fora da tela à esquerda */
+    width: 15rem;
+    height: 100vh;
+    background-color: var(--color-primary-dark);
+    color: var(--color-white);
+    padding: var(--spacing-gutter-medium);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    z-index: 999; /* Garante que a sidebar fique abaixo do header e do botão de toggle */
+    transition: left 300ms ease-in-out; /* Transição suave para a abertura e fechamento */
+}
+
+.sidebar-open {
+    left: 0;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sidebar-title {
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-gutter-medium);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    padding-top: 7rem;
+}
+
+.sidebar-item {
+    display: block;
+    padding: 1rem; 
+    text-decoration: none;
+    color: var(--color-white);
+    font-size: 1.2rem;
+    border-radius: 0.4rem;
+    transition: background-color 300ms ease-in-out;
+    font-size: 1.5rem;
+}
+
+.sidebar-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-toggle {
+    position: fixed;
+    top: 3rem; 
+    left: 5rem;
+    background: none;
+    border: none;
+    color: var(--color-white);
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 1100;
+    transition: color 300ms ease-in-out;
+}
+
+.sidebar-toggle:hover {
+    color: var(--color-primary); 
+}
+
 
 .main-footer {
     display: flex;
@@ -247,3 +338,59 @@ a {
 .book-read-more.button:hover {
     background-color: var(--color-primary);
 }
+
+.new-book-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 60rem;
+    margin: var(--spacing-gutter-large) auto 0;
+    margin-left: 30rem;
+    background-color: var(--color-white);
+    padding: var(--spacing-gutter-medium);
+    border-radius: 0.8rem;
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+}
+
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--color-primary-dark);
+}
+
+.form-input {
+    width: 100%;
+    padding: 1rem;
+    border: 0.1rem solid #cccccc;
+    border-radius: 0.4rem;
+    box-sizing: border-box;
+    transition: border-color 300ms ease-in-out;
+}
+
+.form-input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+}
+
+.form-button {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    padding: 1rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    font-size:1.5rem;
+    transition: background-color 300ms ease-in-out, box-shadow 300ms ease-in-out;
+    margin-top: 1rem;
+}
+
+.form-button:hover {
+    background-color: rgba(0, 123, 255, 0.9); 
+    box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+}
+
