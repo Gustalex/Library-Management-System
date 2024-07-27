@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     'rest_framework',
     #swagger
     'drf_yasg',
+    #cors
+    'corsheaders',
     #my_apps
     'book',
     'book_services',
@@ -43,7 +45,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'libSys.urls'
 
