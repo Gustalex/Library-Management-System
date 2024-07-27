@@ -1,5 +1,7 @@
 class NewBookController {
 
+    // Genre Actions
+
     static async listGenres() {
         try {
             const response = await axios.get('http://127.0.0.1:8000/book/genre/');
@@ -23,6 +25,35 @@ class NewBookController {
         }
     }
 
+    static async createGenre(){
+        const genreForm = document.getElementById('new-genre-form');
+        if(genreForm){
+            genreForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const formData = new FormData(genreForm);
+                const data_genre = {
+                    name: formData.get('new-genre'),
+                };
+                console.log('Dados do genero:', data_genre);
+                try{
+                    const response=await axios.post('http://127.0.0.1:8000/book/genre/', data_genre, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if(response.status===201){
+                        window.location.replace('../views/new_book.html');
+                    }
+                }
+                catch(error){
+                    alert('Error creating genre', error);
+                }
+            });
+        }
+    }
+
+    // Book Actions
+    
     static async createBook() {
         const bookForm = document.getElementById('new-book-form');
         if (bookForm) {
@@ -61,6 +92,7 @@ class NewBookController {
     }
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const observeElement = (elementId, callback) => {
         const observer = new MutationObserver((_, observer) => {
@@ -76,5 +108,9 @@ document.addEventListener('DOMContentLoaded', () => {
     observeElement('new-book-form', async () => {
         await NewBookController.populateGenres();
         NewBookController.createBook();
+    });
+
+    observeElement('new-genre-form', async () => {
+        NewBookController.createGenre();
     });
 });

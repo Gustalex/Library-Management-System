@@ -45,40 +45,16 @@
     </aside>
     <main class="main-content-container">
         <div class="main-content container">
-            <form class="new-book-form" id="new-book-form">
+            <form class="new-book-form" id="new-genre-form">
                 <div class="form-group">
-                    <label for="genre">Genre</label>
-                    <select id="genre" name="genre" class="form-input" required>
-                        <option value="" disabled selected>Select a genre</option>
-                    </select>
-                    <a href="../views/new_genre.html" class="genre-link">Didn't find your genre? Add it here.</a>
+                    <label for="Genre">Genre</label>
+                    <input type="text" id="new-genre" name="new-genre" class="form-input" required;">
                 </div>
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" id="title" name="title" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="author">Author</label>
-                    <input type="text" id="author" name="author" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="edition">Edition</label>
-                    <input type="text" id="edition" name="edition" class="form-input" required style="padding-top: 3.3rem;">
-                </div>
-                <div class="form-group">
-                    <label for="synopsis">Synopsis</label>
-                    <textarea id="synopsis" name="synopsis" class="form-input" rows="6"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="cover">Cover</label>
-                    <input type="file" id="cover" name="cover" class="form-input" required>
-                </div>
-                <button type="submit" class="form-button">Add Book</button>
+                <button type="submit" class="form-button">Add Genre</button>
             </form>
-                        
         </div>
     </main>
-    <footer class="main-footer">
+    <footer class="main-footer" style="margin-top: 50.9rem;"">
         <div class="developer">
             <a href="https://github.com/Gustalex" target="_blank" rel="noreferrer noopener"> By Gustavo Silva</a>
         </div>
