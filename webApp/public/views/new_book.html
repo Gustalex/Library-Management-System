@@ -40,39 +40,41 @@
         <div class="sidebar-content">
             <ul class="sidebar-menu">
                 <li><a href="../views/new_book.html" class="sidebar-item">New Book</a></li>
-                <!-- Adicione mais itens de menu aqui -->
             </ul>
         </div>
     </aside>
     <main class="main-content-container">
         <div class="main-content container">
-            <form action="" class="new-book-form">
+            <form class="new-book-form" id="new-book-form">
                 <div class="form-group">
                     <label for="title">Title</label>
-                    <input type="text" id="title" class="form-input" required>
+                    <input type="text" id="title" name="title" class="form-input" required>
                 </div>
                 <div class="form-group">
                     <label for="author">Author</label>
-                    <input type="text" id="author" class="form-input" required>
+                    <input type="text" id="author" name="author" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <select id="genre" name="genre" class="form-input" required>
+                        <option value="" disabled selected>Select a genre</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="edition">Edition</label>
-                    <input type="text" id="edition" class="form-input" required>
+                    <input type="text" id="edition" name="edition" class="form-input" required style="padding-top: 1.6rem;">
                 </div>
                 <div class="form-group">
                     <label for="synopsis">Synopsis</label>
-                    <textarea id="synopsis" class="form-input" rows="5"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="isbn">Isbn</label>
-                    <input type="text" id="isbn" class="form-input" required>
+                    <textarea id="synopsis" name="synopsis" class="form-input" rows="6"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="cover">Cover</label>
-                    <input type="file" id="cover" class="form-input" required>
+                    <input type="file" id="cover" name="cover" class="form-input" required>
                 </div>
                 <button type="submit" class="form-button">Add Book</button>
             </form>
+                        
         </div>
     </main>
     <footer class="main-footer">
@@ -86,5 +88,7 @@
             document.querySelector('.sidebar').classList.toggle('sidebar-open');
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../js/new_book.js"></script>
 </body>
 </html>
