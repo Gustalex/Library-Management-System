@@ -1,3 +1,37 @@
+function resizeBookCover(cover) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        const originalName = cover.name;
+
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                const targetWidth = 348;
+                const targetHeight = 500;
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+
+                ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const file = new File([blob], originalName, { type: 'image/jpeg' });
+                        resolve(file);
+                    } 
+                    else {
+                        reject(new Error('Failed to create blob from canvas'));
+                    }
+                }, 'image/jpeg', 1);
+            };
+            img.src = event.target.result;
+        };
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(cover);
+    });
+}
 class NewBookController {
 
     // Genre Actions
@@ -59,39 +93,55 @@ class NewBookController {
         if (bookForm) {
             bookForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
+
                 const formData = new FormData(bookForm);
-                const data_book = {
+                const data = {
                     title: formData.get('title'),
                     author: formData.get('author'),
                     genre: formData.get('genre'),
                     edition: formData.get('edition'),
                     synopsis: formData.get('synopsis'),
                 };
-
-                const cover = formData.get('cover');
-                if(cover){
-                    console.log('Cover:', cover);
-                }
-
+    
+                console.log('Dados do livro:', data);
+    
                 try {
-                    console.log('Dados do livro:', data_book);
-                    const response = await axios.post('http://127.0.0.1:8000/book/book/', data_book, {
+                    const response = await axios.post('http://127.0.0.1:8000/book/book/', data, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     });
                     if (response.status === 201) {
-                        alert('Book created successfully');
+                        const bookId = response.data.id;
+                        console.log('Livro criado com id:', bookId);
+    
+                        const coverFile = formData.get('cover');
+                        const resizedFile = await resizeBookCover(coverFile);
+    
+                        const coverFormData = new FormData();
+                        coverFormData.append('cover_image', resizedFile);
+    
+                        console.log('Capa do livro redimensionada:', resizedFile);
+    
+                        const coverResponse = await axios.post(`http://127.0.0.1:8000/book/covers/${bookId}/cover/`, coverFormData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        });
+                        if (coverResponse.status === 201) {
+                            console.log('Capa do livro carregada com sucesso');
+                        }
+                        alert('Livro criado com sucesso');
+                        return response.data;
                     }
-                    return response.data;
-                } catch (error) {
-                    alert('Error creating book');
+                }catch(error){
+                    console.error('Erro ao criar livro:', error);
+                    alert('Erro ao criar livro');
                 }
             });
         }
-    }
+    }    
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const observeElement = (elementId, callback) => {
