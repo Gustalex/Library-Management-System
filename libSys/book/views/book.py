@@ -16,7 +16,7 @@ class BookViewSet(ModelViewSet):
             book = Book.objects.get(isbn=isbn)
             estoque = Estoque.objects.filter(book=book).first()
             if estoque:
-                estoque.quantity += 1
+                estoque.increment_quantity()
                 estoque.set_status()
                 estoque.save()
                 return Response({'detail': 'Quantidade incrementada no estoque.'}, status=status.HTTP_200_OK)
