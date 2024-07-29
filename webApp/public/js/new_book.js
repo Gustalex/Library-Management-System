@@ -96,6 +96,7 @@ class NewBookController {
 
                 const formData = new FormData(bookForm);
                 const data = {
+                    isbn: formData.get('isbn'),
                     title: formData.get('title'),
                     author: formData.get('author'),
                     genre: formData.get('genre'),
