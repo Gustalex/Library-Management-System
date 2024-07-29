@@ -4,24 +4,12 @@ from book.models.factory_model import FactoryModel
 from book.models.genre import Genre
 
 class Book(FactoryModel):
+    isbn=models.CharField(max_length=20, unique=True, blank=True, null=True)
     title=models.CharField(max_length=100)
     author=models.CharField(max_length=50)
     genre=models.ForeignKey(Genre, on_delete=models.CASCADE)
     edition=models.CharField(max_length=50, blank=True, null=True)
-    status=models.CharField(max_length=30, default='Avaliable')
     synopsis=models.TextField(blank=True, null=True) 
-    
-    def reserve_book(self):
-        self.status='Reserved'
-        self.save()
-    
-    def borrow_book(self):
-        self.status='Borrowed'
-        self.save()
-    
-    def return_book(self):
-        self.status='Avaliable'
-        self.save()
     
     def __str__(self) -> str: 
         return self.title
