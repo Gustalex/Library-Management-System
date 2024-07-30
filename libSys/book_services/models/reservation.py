@@ -10,12 +10,6 @@ class Reservation(FactoryModel):
         db_table = 'reservations'
         verbose_name = 'Reservation'
         verbose_name_plural = 'Reservations'
-        
-    def cancel_reservation(self):
-        book = self.book
-        book.return_book()
-        self.active = False
-        self.save()
     
     def inactivate_reservation(self):
         self.active = False

@@ -3,11 +3,11 @@ from rest_framework.decorators import action
 from rest_framework import status
 from django.db import transaction
 
-from book_services.helper import return_response
+from book_services.helper import return_response, check_stock
 from book_services.models import Reservation
 
 from user.models import Customer
-from book.models import Book
+from book.models import Book, Estoque
 
 class ReservationViewSet(ViewSet):
     
@@ -22,14 +22,16 @@ class ReservationViewSet(ViewSet):
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Customer not found'})
 
         with transaction.atomic():
-            if book.status in ['Reserved', 'Borrowed']:
-                if book.status == 'Reserved':
-                    return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already reserved'})
-                return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Book is already borrowed'})
+            if not check_stock(book.id):
+                return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book not available'})
             
             reservation = Reservation.objects.create(book=book, customer=customer)
-            book.reserve_book()
             
+            estoque=Estoque.objects.get(book=book)
+            
+            estoque.decrement_quantity()
+            estoque.set_status()
+           
             return return_response(request, status.HTTP_200_OK, {'message': 'Book reserved', 'reservation_id': reservation.id})
 
     @action(detail=True, methods=['DELETE'])
@@ -39,6 +41,10 @@ class ReservationViewSet(ViewSet):
         except Reservation.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Reservation not found'})
         
-        reservation.cancel_reservation()
+        estoque=Estoque.objects.get(book=reservation.book)
+        
+        estoque.increment_quantity()
+        estoque.set_status()
+        reservation.inactivate_reservation()
         reservation.delete()
         return return_response(request, status.HTTP_200_OK, {'message': 'Reservation canceled'})

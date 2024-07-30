@@ -2,7 +2,7 @@ from datetime import datetime
 
 from rest_framework.response import Response
 
-from book.models import Book
+from book.models import Book, Estoque
 from user.models import Customer
 from book_services.models import Reservation
 
@@ -25,3 +25,13 @@ def find_reservation_by_book_and_customer(book_id, customer_id):
         return None
         
     return Reservation.objects.filter(book=book, customer=customer, is_deleted=False).first()
+
+
+def check_stock(book_id):
+        try:
+            book = Book.objects.get(id=book_id)
+        except Book.DoesNotExist:
+            return False
+        
+        estoque = Estoque.objects.filter(book=book, quantity__gt=0, status__in=['Available', 'Last Unit'])
+        return estoque.exists()

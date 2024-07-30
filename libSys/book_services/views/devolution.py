@@ -6,7 +6,7 @@ from django.db import transaction
 from book_services.helper import return_response
 from book_services.models import Borrow
 from user.models import Customer
-from book.models import Book
+from book.models import Book, Estoque
 
 class DevolutionViewSet(ViewSet):
 
@@ -26,8 +26,6 @@ class DevolutionViewSet(ViewSet):
             return None
         
         borrow.cancel_borrow()
-        borrow.active = False
-        borrow.save(update_fields=['active'])
         return borrow
     
     @action(detail=True, methods=['PATCH'])
@@ -42,6 +40,9 @@ class DevolutionViewSet(ViewSet):
         
         with transaction.atomic():
             borrow = self.find_borrow_by_book_and_customer(book.id, customer.id)
+            estoque = Estoque.objects.get(book=book)
+            estoque.increment_quantity()
+            estoque.set_status()
             
             if borrow:
                 self.conclude_borrow(borrow.id)
