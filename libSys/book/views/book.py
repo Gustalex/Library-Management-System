@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
 
 from book.models import Book, Estoque
 from book.serializers import BookSerializer
@@ -26,3 +27,16 @@ class BookViewSet(ModelViewSet):
             book = serializer.save()
             Estoque.objects.create(book=book, quantity=1)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+    
+    
+    @action(detail=False, methods=['get'])
+    def check_isbn(self, request):
+        isbn=request.query_params.get('isbn', None)
+        
+        if isbn is not None:
+            books=Book.objects.filter(isbn=isbn) 
+            serializer=BookSerializer(books, many=True)
+            return Response(serializer.data)
+        
+        return Response({'detail': 'ISBN não informado.'}, status=status.HTTP_400_BAD_REQUEST)

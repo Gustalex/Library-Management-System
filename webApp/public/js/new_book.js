@@ -87,16 +87,28 @@ class NewBookController {
     }
 
     // Book Actions
+
+    static async listBooks() {
+        try{
+            const response = await axios.get('http://127.0.0.1:8000/book/book/')
+            console.log('Books:', response.data);
+            return response.data;
+        }catch(error){
+            console.error('Error fetching books', error);
+        }
+    }
+
     
     static async createBook() {
         const bookForm = document.getElementById('new-book-form');
         if (bookForm) {
             bookForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
-
+    
                 const formData = new FormData(bookForm);
+                const isbn = formData.get('isbn');
                 const data = {
-                    isbn: formData.get('isbn'),
+                    isbn: isbn,
                     title: formData.get('title'),
                     author: formData.get('author'),
                     genre: formData.get('genre'),
@@ -107,41 +119,52 @@ class NewBookController {
                 console.log('Dados do livro:', data);
     
                 try {
+                    const checkResponse = await axios.get(`http://127.0.0.1:8000/book/book/check_isbn/?isbn=${isbn}`);
+                    const isbnExists = checkResponse.data.length > 0;
+    
                     const response = await axios.post('http://127.0.0.1:8000/book/book/', data, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     });
-                    if (response.status === 201) {
+    
+                    if (response.status === 201){
                         const bookId = response.data.id;
-                        console.log('Livro criado com id:', bookId);
     
-                        const coverFile = formData.get('cover');
-                        const resizedFile = await resizeBookCover(coverFile);
+                        if (!isbnExists){
+                            const coverFile = formData.get('cover');
+                            const resizedFile = await resizeBookCover(coverFile);
     
-                        const coverFormData = new FormData();
-                        coverFormData.append('cover_image', resizedFile);
+                            const coverFormData = new FormData();
+                            coverFormData.append('cover_image', resizedFile);
     
-                        console.log('Capa do livro redimensionada:', resizedFile);
+                            console.log('Capa do livro redimensionada:', resizedFile);
     
-                        const coverResponse = await axios.post(`http://127.0.0.1:8000/book/covers/${bookId}/cover/`, coverFormData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
+                            const coverResponse = await axios.post(`http://127.0.0.1:8000/book/covers/${bookId}/cover/`, coverFormData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            });
+    
+                            if (coverResponse.status === 201){
+                                console.log('Capa do livro carregada com sucesso');
                             }
-                        });
-                        if (coverResponse.status === 201) {
-                            console.log('Capa do livro carregada com sucesso');
                         }
+                        else{
+                            console.log('ISBN já existe. Capa não será carregada.');
+                        }
+    
                         alert('Livro criado com sucesso');
                         return response.data;
                     }
-                }catch(error){
+                } catch (error) {
                     console.error('Erro ao criar livro:', error);
                     alert('Erro ao criar livro');
                 }
             });
         }
-    }    
+    }
+    
 }
 
 document.addEventListener('DOMContentLoaded', () => {

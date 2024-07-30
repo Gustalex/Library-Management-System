@@ -9,4 +9,5 @@ router.register(r'covers', CoverViewSet, basename='cover')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('check_isbn/', BookViewSet.as_view({'get': 'check_isbn'}), name='check_isbn'),
 ]
