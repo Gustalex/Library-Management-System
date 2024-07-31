@@ -24,7 +24,7 @@ def find_reservation_by_book_and_customer(book_id, customer_id):
     except (Book.DoesNotExist, Customer.DoesNotExist):
         return None
         
-    return Reservation.objects.filter(book=book, customer=customer, is_deleted=False).first()
+    return Reservation.objects.filter(book=book, customer=customer, active=True).first()
 
 
 def check_stock(book_id):

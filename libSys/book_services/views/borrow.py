@@ -8,15 +8,6 @@ from user.models import Customer
 from book.models import Book, Estoque
 
 class BorrowViewSet(ViewSet):
-    
-    def check_stock(self, book_id):
-        try:
-            book = Book.objects.get(id=book_id)
-        except Book.DoesNotExist:
-            return False
-        
-        estoque = Estoque.objects.filter(book=book, quantity__gt=0, status__in=['Available', 'Last Unit'])
-        return estoque.exists()
 
     def update_popularity_by_book_id(self, book_id):
         book = Book.objects.get(id=book_id)
@@ -42,9 +33,9 @@ class BorrowViewSet(ViewSet):
     
     
     @action(detail=True, methods=['POST'])
-    def do_borrow(self, request):
+    def do_borrow(self, request, pk=None):
         try:
-            book = Book.objects.get(id=request.data['book_id'])  
+            book = Book.objects.get(id=request.data['book_id'])
             customer = Customer.objects.get(id=request.data['customer_id'])
             initial_date = request.data['initial_date']
             final_date = request.data['final_date']
@@ -54,28 +45,27 @@ class BorrowViewSet(ViewSet):
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Customer not found'})
         
         with transaction.atomic():
+            reservation = find_reservation_by_book_and_customer(book.id, customer.id)
+            if reservation:
+                self.inactivate_reservation(reservation.id)
+                borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
+                self.update_popularity_by_book_id(book.id)
+                return return_response(request, status.HTTP_201_CREATED, {'message': 'Book borrowed successfully'})
+
             if check_stock(book.id):
                 estoque = Estoque.objects.filter(book=book, quantity__gt=0, status__in=['Available', 'Last Unit']).first()
+                if not estoque:
+                    return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Book not available in stock'})
+                
                 borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
                 self.update_popularity_by_book_id(book.id)
                 estoque.decrement_quantity()
                 estoque.set_status()
                 estoque.save()
-                reservation = find_reservation_by_book_and_customer(book.id, customer.id)
-                
-                if reservation:
-                    self.inactivate_reservation(reservation.id)
-                    
+
                 return return_response(request, status.HTTP_201_CREATED, {'message': 'Book borrowed successfully'})
-            else:
-                if self.check_if_book_is_reserved_by_customer(book.id, customer.id):
-                    borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
-                    self.update_popularity_by_book_id(book.id)
-                    reservation = find_reservation_by_book_and_customer(book.id, customer.id)
-                    self.inactivate_reservation(reservation.id)
-                    return return_response(request, status.HTTP_201_CREATED, {'message': 'Book borrowed successfully'})   
-                                
-                return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Book not available'})
+            
+            return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Book not available'})
                 
                 
     @action(detail=True, methods=['DELETE'])
