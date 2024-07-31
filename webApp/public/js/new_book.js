@@ -34,6 +34,16 @@ function resizeBookCover(cover) {
 }
 class NewBookController {
 
+    // Util
+
+    static autofillFields(book) {
+        document.getElementById('title').value = book.title || '';
+        document.getElementById('author').value = book.author || '';
+        document.getElementById('genre').value = book.genre || '';
+        document.getElementById('edition').value = book.edition || '';
+        document.getElementById('synopsis').value = book.synopsis || '';
+    }
+
     // Genre Actions
 
     static async listGenres() {
@@ -68,7 +78,6 @@ class NewBookController {
                 const data_genre = {
                     name: formData.get('new-genre'),
                 };
-                console.log('Dados do genero:', data_genre);
                 try{
                     const response=await axios.post('http://127.0.0.1:8000/book/genre/', data_genre, {
                         headers: {
@@ -98,7 +107,22 @@ class NewBookController {
         }
     }
 
-    
+    static async checkIsbn(isbn) {
+        try {
+            const checkResponse = await axios.get(`http://127.0.0.1:8000/book/book/check_isbn/?isbn=${isbn}`);
+            const bookData = checkResponse.data;
+
+            if (bookData.length > 0) {
+                this.autofillFields(bookData[0]);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error('Error checking ISBN', error);
+        }
+    }
+
     static async createBook() {
         const bookForm = document.getElementById('new-book-form');
         if (bookForm) {
@@ -116,11 +140,8 @@ class NewBookController {
                     synopsis: formData.get('synopsis'),
                 };
     
-                console.log('Dados do livro:', data);
-    
                 try {
-                    const checkResponse = await axios.get(`http://127.0.0.1:8000/book/book/check_isbn/?isbn=${isbn}`);
-                    const isbnExists = checkResponse.data.length > 0;
+                    const isbnExists = await this.checkIsbn(isbn);
     
                     const response = await axios.post('http://127.0.0.1:8000/book/book/', data, {
                         headers: {
@@ -138,8 +159,6 @@ class NewBookController {
                             const coverFormData = new FormData();
                             coverFormData.append('cover_image', resizedFile);
     
-                            console.log('Capa do livro redimensionada:', resizedFile);
-    
                             const coverResponse = await axios.post(`http://127.0.0.1:8000/book/covers/${bookId}/cover/`, coverFormData, {
                                 headers: {
                                     'Content-Type': 'multipart/form-data'
@@ -147,19 +166,19 @@ class NewBookController {
                             });
     
                             if (coverResponse.status === 201){
-                                console.log('Capa do livro carregada com sucesso');
+                                console.log('Cover added successfully');
                             }
                         }
                         else{
-                            console.log('ISBN já existe. Capa não será carregada.');
+                            console.log('This book already has a cover');
                         }
     
-                        alert('Livro criado com sucesso');
+                        alert('Book added successfully');
                         return response.data;
                     }
                 } catch (error) {
-                    console.error('Erro ao criar livro:', error);
-                    alert('Erro ao criar livro');
+                    console.error('Error creating book', error);
+                    alert('Error creating book');
                 }
             });
         }
@@ -182,9 +201,20 @@ document.addEventListener('DOMContentLoaded', () => {
     observeElement('new-book-form', async () => {
         await NewBookController.populateGenres();
         NewBookController.createBook();
+        const isbnField = document.getElementById('isbn');
+        isbnField.addEventListener('blur', async ()=>{
+            const isbn = isbnField.value;
+            if(isbn){
+                const isbnExists = await NewBookController.checkIsbn(isbn);
+                if(!isbnExists){
+                    NewBookController.autofillFields({});
+                }
+            }
+        })
     });
 
     observeElement('new-genre-form', async () => {
         NewBookController.createGenre();
     });
+
 });
