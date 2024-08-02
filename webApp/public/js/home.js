@@ -10,17 +10,30 @@ class HomeController {
         }
     }
 
-    static updateTrendingBooks(books) {
+    static async getGenre(genreId) {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/book/genre/${genreId}/`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching genre', error);
+        }
+    }
+
+    static async updateTrendingBooks(books) {
         const trendingBooksList = document.getElementById('trending-books-list');
         trendingBooksList.innerHTML = '';
 
-        books.forEach(book => {
+        books.forEach(async (book) => {
             const bookElement = document.createElement('div');
             bookElement.classList.add('book', 'book-list-item');
-
+        
             const coverImage = book.covers.length > 0 ? `http://127.0.0.1:8000${book.covers[0].cover_image}` : '';
-            const genreName = book.genre ? book.genre.name : '';
-
+            let genreName = 'Unknown';
+            if (book.genre) {
+                const genre = await this.getGenre(book.genre);
+                genreName = genre.name;
+            }
+        
             bookElement.innerHTML = `
                 <div class="book-cover">
                     <img src="${coverImage}" alt="book-cover">
@@ -40,12 +53,12 @@ class HomeController {
                     </span>
                     <footer class="book-footer">
                         <a href="#" class="book-read-more button button-dark button-full-width">
-                            <i class="fas fa-book-reader"></i>
+                            <i class="fas fa-eye"></i>
                         </a>
                     </footer>
                 </div>
             `;
-
+        
             trendingBooksList.appendChild(bookElement);
         });
     }

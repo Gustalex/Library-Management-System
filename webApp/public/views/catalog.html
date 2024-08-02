@@ -45,16 +45,27 @@
             </ul>
         </div>
     </aside>
-    <main class="main-content-container">
+    <main class="main-content-container catalog-page">
+        <div class="search-container">
+            <div class="container">
+                <form id="search-form" class="search-form">
+                    <input type="text" id="search-title" class="search-input" placeholder="Título">
+                    <input type="text" id="search-author" class="search-input" placeholder="Autor">
+                    <input type="text" id="search-edition" class="search-input" placeholder="Edição">
+                    <select id="search-genre" class="search-input">
+                        <!-- Gêneros serão carregados dinamicamente -->
+                    </select>
+                    <button type="submit" class="search-button"> <i class="fas fa-search"></i></button>
+                </form>
+            </div>
+        </div>
         <div class="main-content container">
-            <section class="popular-books-intro">
-                <h2>Trending books</h2>
-            </section>
-            <div class="main-content main-content-list" id="trending-books-list">
-                <!-- Livros populares aqui -->
+            <div class="book-list" id="book-list">
+                <!-- Os livros serão adicionados aqui dinamicamente -->
             </div>
         </div>
     </main>
+    
     <footer class="main-footer">
         <div class="developer">
             <a href="https://github.com/Gustalex" target="_blank" rel="noreferrer noopener"> By Gustavo Silva</a>
@@ -67,6 +78,6 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="../js/home.js"></script>
+    <script src="../js/catalog.js"></script>
 </body>
 </html>
