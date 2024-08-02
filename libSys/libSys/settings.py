@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     #cors
     'corsheaders',
+    #filter
+    'django_filters',
     #my_apps
     'book',
     'book_services',

@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from book.models import Book
+from book.models import Book, Genre
 from book.models.cover import Cover
-from book.serializers.genre_serializer import GenreSerializer
 
 class CoverSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,7 +9,7 @@ class CoverSerializer(serializers.ModelSerializer):
 
 class BookSerializer(serializers.ModelSerializer):
     covers = CoverSerializer(many=True, read_only=True)
-    genre = GenreSerializer(read_only=True)
+    genre = serializers.PrimaryKeyRelatedField(queryset=Genre.objects.all())
 
     class Meta:
         model = Book
