@@ -22,7 +22,7 @@ class HomeController {
     static async updateTrendingBooks(books) {
         const trendingBooksList = document.getElementById('trending-books-list');
         trendingBooksList.innerHTML = '';
-
+        
         books.forEach(async (book) => {
             const bookElement = document.createElement('div');
             bookElement.classList.add('book', 'book-list-item');
@@ -52,7 +52,7 @@ class HomeController {
                         <i class="fas fa-layer-group"></i> ${genreName}
                     </span>
                     <footer class="book-footer">
-                        <a href="#" class="book-read-more button button-dark button-full-width">
+                        <a href="../views/book-detail.html?id=${book.id}" class="book-read-more button button-dark button-full-width">
                             <i class="fas fa-eye"></i>
                         </a>
                     </footer>

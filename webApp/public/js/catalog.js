@@ -74,7 +74,7 @@ class CatalogController {
                         </span>
                     </div>
                     <footer class="book-footer">
-                        <a href="#" class="book-read-more button button-dark button-full-width">
+                        <a href="../views/book-detail.html?id=${book.id}" class="book-read-more button button-dark button-full-width">
                             <i class="fas fa-eye"></i>
                         </a>
                     </footer>

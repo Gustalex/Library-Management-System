@@ -221,18 +221,78 @@ a {
     gap: var(--spacing-gutter-large);
 }
 
+.main-content-detail .book-list-item {
+    max-width: 84rem;
+    margin: 0 auto;
+    
+}
+
+.main-content-detail .book-list-item:hover {
+    transform: scale(1);
+    box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.book-synopsis {
+    max-width: 50rem;
+    line-height: 1.6;
+}
+
+.book-detail-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.book {
+    flex: 1 1 30%;
+}
+
+.book-synopsis {
+    flex: 1 1 60%;
+    margin-left: 2rem;
+}
+
+.book-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    margin-top: 2rem;
+}
+
+.book-actions button {
+    width: 250px;
+    padding: 1rem 2rem; 
+    background-color: var(--color-primary-dark);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+    margin-bottom: 3rem;
+    margin-left: 5rem;
+}
+
+.book-actions button:hover {
+    background-color: #0056b3;
+}
+
+.book-actions button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
 .sidebar {
-    position: fixed; /* Fixa a sidebar na tela */
+    position: fixed;
     top: 0;
-    left: -15rem; /* Coloca a sidebar fora da tela à esquerda */
+    left: -15rem; 
     width: 15rem;
     height: 100vh;
     background-color: var(--color-primary-dark);
     color: var(--color-white);
     padding: var(--spacing-gutter-medium);
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
-    z-index: 999; /* Garante que a sidebar fique abaixo do header e do botão de toggle */
-    transition: left 300ms ease-in-out; /* Transição suave para a abertura e fechamento */
+    z-index: 999;
+    transition: left 300ms ease-in-out;
 }
 
 .sidebar-open {
