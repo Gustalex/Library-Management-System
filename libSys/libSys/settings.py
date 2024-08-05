@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'book',
     'book_services',
     'user',
+    'sendmail',
+    'fine',
 ]
 
 MIDDLEWARE = [

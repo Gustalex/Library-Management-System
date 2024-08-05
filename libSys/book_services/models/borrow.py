@@ -27,3 +27,7 @@ class Borrow(FactoryModel):
         self.active = False
         self.save(update_fields=['active'])
         
+    def calculate_fine(self):
+        if self.active:
+            days_late = (timezone.now().date() - self.final_date).days
+            return max(days_late * 2.0, 0)
