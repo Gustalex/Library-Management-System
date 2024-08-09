@@ -544,3 +544,41 @@ a {
     box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
 }
 
+.loans-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.loans-table th, .loans-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.loans-table th {
+    background-color: #f4f4f4;
+}
+
+/* Adicionando um estilo para o botão de retorno */
+.return-button {
+    padding: 8px 16px;
+    background-color: #007bff; /* Cor de fundo azul */
+    color: white;
+    border: none;
+    border-radius: 4px; /* Borda arredondada */
+    cursor: pointer;
+    font-size: 14px; /* Tamanho da fonte */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transição suave */
+}
+
+.return-button:hover {
+    background-color: #0056b3; /* Cor de fundo azul escuro ao passar o mouse */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
+}
+
+.return-button:focus {
+    outline: none; /* Remove o contorno padrão ao focar */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Adiciona uma sombra ao focar */
+}
+
+
