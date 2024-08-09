@@ -29,5 +29,10 @@ class Borrow(FactoryModel):
         
     def calculate_fine(self):
         if self.active:
-            days_late = (timezone.now().date() - self.final_date).days
-            return max(days_late * 2.0, 0)
+            today = timezone.now().date()
+            if today > self.final_date:
+                days_late = (today - self.final_date).days - 1
+                if days_late >= 0:
+                    return max(days_late * 2.0, 0)
+            return 0
+        return 0

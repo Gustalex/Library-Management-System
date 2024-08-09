@@ -6,13 +6,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from book.models import Book, Estoque
 from book.serializers import BookSerializer
-from book.filters import BookFilter  # Importe o filtro aqui
+from book.filters import BookFilter
 
 class BookViewSet(ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = BookFilter  # Adicione o filtro aqui
+    filterset_class = BookFilter
 
     def perform_create(self, serializer):
         isbn = serializer.validated_data['isbn']

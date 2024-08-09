@@ -6,6 +6,7 @@ from book_services.helper import return_response, find_reservation_by_book_and_c
 from book_services.models import Borrow, Reservation, Popularity
 from user.models import Customer
 from book.models import Book, Estoque
+from book_services.serializers import BorrowSerializer
 
 class BorrowViewSet(ViewSet):
 
@@ -81,3 +82,9 @@ class BorrowViewSet(ViewSet):
         borrow.cancel_borrow()
         borrow.delete()
         return return_response(request, status.HTTP_200_OK, {'message': 'Borrow deleted'})
+    
+    @action(detail=False, methods=['GET'])
+    def list_borrows(self, request):
+        borrows = Borrow.objects.all()
+        serializer=BorrowSerializer(borrows, many=True)
+        return return_response(request, status.HTTP_200_OK, serializer.data)

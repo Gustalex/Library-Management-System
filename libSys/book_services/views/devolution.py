@@ -27,12 +27,48 @@ class DevolutionViewSet(ViewSet):
         
         borrow.cancel_borrow()
         return borrow
+        
+    def check_if_fine_exists(self, borrow_id):
+        try:
+            borrow = Borrow.objects.get(id=borrow_id)
+        except Borrow.DoesNotExist:
+            return False 
+        
+        fine_amount = borrow.calculate_fine()
+        if fine_amount is not None and fine_amount > 0:
+            return True
+        return False
+
+    
+    @action(detail=True, methods=['GET'])
+    def check_fine(self, request, pk=None):
+        if not pk:
+            return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'borrow_id is required'})
+        
+        try:
+            borrow = Borrow.objects.get(id=pk)
+        except Borrow.DoesNotExist:
+            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrow not found'})
+        
+        if self.check_if_fine_exists(borrow.id):
+            return return_response(request, status.HTTP_200_OK, {'message': 'Fine exists'})
+        
+        return return_response(request, status.HTTP_200_OK, {'message': 'Fine not exists'})
+
+
+        
     
     @action(detail=True, methods=['PATCH'])
     def do_devolution(self, request):
+        book_id = request.data.get('book_id')
+        customer_id = request.data.get('customer_id')
+        
+        if not book_id or not customer_id:
+            return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Missing parameters'})
+        
         try:
-            book = Book.objects.get(id=request.data['book_id'])  
-            customer = Customer.objects.get(id=request.data['customer_id'])
+            book = Book.objects.get(id=book_id)
+            customer = Customer.objects.get(id=customer_id)
         except Book.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book not found'})
         except Customer.DoesNotExist:

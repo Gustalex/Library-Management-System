@@ -11,13 +11,18 @@ from fine.serializers import FineSerializer
 class FineViewSet(ViewSet):
     
     @action(detail=True, methods=['POST'])
-    def creat_new_fine(self, request):
+    def create_new_fine(self, request):
+        customer_id = request.data.get('customer_id')
+        borrow_id = request.data.get('borrow_id')
+        
         try:
-            customer = Customer.objects.get(id=request.data['customer_id'])
-            borrow = Borrow.objects.get(id=request.data['borrow_id'])
+            customer = Customer.objects.get(id=customer_id)
+            borrow = Borrow.objects.get(id=borrow_id)
             value = borrow.calculate_fine()
+            
             if value == 0:
-                return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'No fine to be paid'})
+                return return_response(request, status.HTTP_200_OK, {'message': 'No fine to be paid'})
+            
         except Customer.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Customer not found'})
         except Borrow.DoesNotExist:
@@ -26,6 +31,8 @@ class FineViewSet(ViewSet):
         with transaction.atomic():
             fine = Fine.objects.create(customer=customer, borrow=borrow, value=value)
             return return_response(request, status.HTTP_201_CREATED, FineSerializer(fine).data)
+
+
     
     @action(detail=True, methods=['PATCH'])
     def conclude_fine(self, request, pk=None):
