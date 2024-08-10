@@ -12,6 +12,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             'cpf',
             'reservations',
             'borrows',
+            'fines',
         ]
 
 class CustomerCreateSerializer(serializers.ModelSerializer):

@@ -16,8 +16,7 @@ class BaseUser(FactoryModel):
 class Customer(BaseUser):
     reservations = models.ManyToManyField('book_services.Reservation', blank=True, related_name='customers_reservations')
     borrows = models.ManyToManyField('book_services.Borrow', blank=True, related_name='customers_borrows')
-    #aqui vai o campo de Fine quando for implementado o modelo de fine e o sistema de multa
-    
+    fines = models.ManyToManyField('fine.Fine', blank=True, related_name='customers_fines')    
     class Meta:
         db_table = 'customers'
         verbose_name = 'Customer'

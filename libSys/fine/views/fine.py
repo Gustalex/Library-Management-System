@@ -34,7 +34,7 @@ class FineViewSet(ViewSet):
 
 
     
-    @action(detail=True, methods=['PATCH'])
+    @action(detail=True, methods=['DELETE'])
     def conclude_fine(self, request, pk=None):
         try:
             fine = Fine.objects.get(id=pk)
@@ -42,6 +42,7 @@ class FineViewSet(ViewSet):
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Fine not found'})
         
         fine.conclude_fine()
+        fine.delete()
         return return_response(request, status.HTTP_200_OK, FineSerializer(fine).data)
     
     @action(detail=False, methods=['GET'])
