@@ -31,8 +31,7 @@ class Borrow(FactoryModel):
         if self.active:
             today = timezone.now().date()
             if today > self.final_date:
-                days_late = (today - self.final_date).days - 1
-                if days_late >= 0:
-                    return max(days_late * 2.0, 0)
+                days_late = (today - self.final_date).days
+                return days_late * 2.0
             return 0
         return 0
