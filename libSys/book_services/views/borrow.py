@@ -88,3 +88,12 @@ class BorrowViewSet(ViewSet):
         borrows = Borrow.objects.all()
         serializer=BorrowSerializer(borrows, many=True)
         return return_response(request, status.HTTP_200_OK, serializer.data)
+    
+    @action(detail=True, methods=['GET'])
+    def get_borrow(self, request, pk=None):
+        try:
+            borrow = Borrow.objects.get(id=pk)
+            serializer = BorrowSerializer(borrow)
+            return return_response(request, status.HTTP_200_OK, serializer.data)
+        except Borrow.DoesNotExist:
+            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrow not found'})
