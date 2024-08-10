@@ -8,6 +8,7 @@ from book_services.models import Reservation
 
 from user.models import Customer
 from book.models import Book, Estoque
+from fine.models import Fine
 
 class ReservationViewSet(ViewSet):
     
@@ -22,6 +23,10 @@ class ReservationViewSet(ViewSet):
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Customer not found'})
 
         with transaction.atomic():
+            fine=Fine.objects.filter(customer=customer)
+            if fine.exists():
+                return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Customer has a fine to pay'})
+            
             if not check_stock(book.id):
                 return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book not available'})
             

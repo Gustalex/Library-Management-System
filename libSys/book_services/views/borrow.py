@@ -6,6 +6,7 @@ from book_services.helper import return_response, find_reservation_by_book_and_c
 from book_services.models import Borrow, Reservation, Popularity
 from user.models import Customer
 from book.models import Book, Estoque
+from fine.models import Fine
 from book_services.serializers import BorrowSerializer
 
 class BorrowViewSet(ViewSet):
@@ -46,6 +47,9 @@ class BorrowViewSet(ViewSet):
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Customer not found'})
         
         with transaction.atomic():
+            fine=Fine.objects.filter(customer=customer)
+            if fine.exists():
+                return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Customer has a fine to pay'})
             reservation = find_reservation_by_book_and_customer(book.id, customer.id)
             if reservation:
                 self.inactivate_reservation(reservation.id)
