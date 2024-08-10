@@ -49,7 +49,6 @@ class LoansController {
 
     static async handleEmail(customerName, customerEmail, fineValue) {
         try {
-            console.log('Sending fine notification email:', customerName, customerEmail, fineValue);
             const pixKey = '06220161483'
             const emailData = {
                 subject: `Library Fine Notification for ${customerName}`,
@@ -108,7 +107,6 @@ class LoansController {
         try {
             const response = await axios.get('http://127.0.0.1:8000/book-services/borrow/loans/');
             const activeLoans = response.data.filter(loan => loan.active === true);
-            console.log('Active loans:', activeLoans);
             const loansTableBody = document.getElementById('active-loans');
             loansTableBody.innerHTML = ''; 
 

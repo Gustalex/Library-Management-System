@@ -559,26 +559,48 @@ a {
     background-color: #f4f4f4;
 }
 
-/* Adicionando um estilo para o botão de retorno */
+
 .return-button {
     padding: 8px 16px;
-    background-color: #007bff; /* Cor de fundo azul */
+    background-color: #007bff; 
     color: white;
     border: none;
-    border-radius: 4px; /* Borda arredondada */
+    border-radius: 4px; 
     cursor: pointer;
-    font-size: 14px; /* Tamanho da fonte */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transição suave */
+    font-size: 14px; 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+    
 }
 
 .return-button:hover {
-    background-color: #0056b3; /* Cor de fundo azul escuro ao passar o mouse */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
+    background-color: #0056b3; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
 }
 
 .return-button:focus {
-    outline: none; /* Remove o contorno padrão ao focar */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Adiciona uma sombra ao focar */
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); 
 }
 
+.conclude-button {
+    padding: 8px 16px;
+    background-color: #0caf3d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px; 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+    
+}
+
+.conclude-button:hover {
+    background-color: #0caf3d; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+}
+
+.conclude-button:focus {
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(7, 182, 59, 0.5); 
+}
 
