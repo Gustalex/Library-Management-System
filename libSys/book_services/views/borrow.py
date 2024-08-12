@@ -60,7 +60,7 @@ class BorrowViewSet(ViewSet):
             if check_stock(book.id):
                 estoque = Estoque.objects.filter(book=book, quantity__gt=0, status__in=['Available', 'Last Unit']).first()
                 if not estoque:
-                    return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Book not available in stock'})
+                    return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book is not available'})
                 
                 borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
                 self.update_popularity_by_book_id(book.id)
@@ -70,7 +70,7 @@ class BorrowViewSet(ViewSet):
 
                 return return_response(request, status.HTTP_201_CREATED, {'message': 'Book borrowed successfully'})
             
-            return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Book not available'})
+            return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Error borrowing book'})
                 
                 
     @action(detail=True, methods=['DELETE'])
@@ -79,12 +79,12 @@ class BorrowViewSet(ViewSet):
             borrow = Borrow.objects.get(id=pk)
         except Borrow.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrow not found'})
-        
-        estoque=Estoque.objects.get(book=borrow.book)
-        estoque.increment_quantity()
-        estoque.set_status()
-        borrow.cancel_borrow()
-        borrow.delete()
+        with transaction.atomic():
+            estoque=Estoque.objects.get(book=borrow.book)
+            estoque.increment_quantity()
+            estoque.set_status()
+            borrow.cancel_borrow()
+            borrow.delete()
         return return_response(request, status.HTTP_200_OK, {'message': 'Borrow deleted'})
     
     @action(detail=False, methods=['GET'])

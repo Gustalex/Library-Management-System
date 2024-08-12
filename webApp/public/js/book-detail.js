@@ -67,13 +67,17 @@ class BookDetailController {
                         </div>
                         <div class="book-actions">
                             <button class="reserve-button" id="reserve-button">Reserve</button>
-                            <button class="borrow-button">Borrow</button>
+                            <button class="borrow-button" id="borrow-button">Borrow</button>
                         </div>
                     </div>
                 `;
 
                 document.getElementById('reserve-button').addEventListener('click', () => {
                     window.location.href = `../views/reserve.html?id=${book.id}`;
+                });
+
+                document.getElementById('borrow-button').addEventListener('click', () => {
+                    window.location.href = `../views/borrow.html?id=${book.id}`;
                 });
 
             } catch (error) {
