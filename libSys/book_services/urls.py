@@ -13,6 +13,5 @@ urlpatterns = [
     path('devolution/', DevolutionViewSet.as_view({'patch': 'do_devolution'}), name='do_devolution'),
     path('popular/', PopularityViewSet.as_view({'get': 'get_popular_books'}), name='get_popular_books'),
     path('borrow/loans/', BorrowViewSet.as_view({'get': 'list_borrows'}), name='list_borrows'),
-    path('borrow/<int:pk>/check_fine/', DevolutionViewSet.as_view({'get': 'check_fine'}), name='check_fine'),
     path('borrow/<int:pk>/get_loan/', BorrowViewSet.as_view({'get': 'get_borrow'}), name='get_borrow'),
 ]

@@ -25,7 +25,7 @@ class ReservationViewSet(ViewSet):
         with transaction.atomic():
             fine=Fine.objects.filter(customer=customer)
             if fine.exists():
-                return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Customer has a fine to pay'})
+                return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Customer has fine'})
             
             if not check_stock(book.id):
                 return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book not available'})
@@ -37,7 +37,7 @@ class ReservationViewSet(ViewSet):
             estoque.decrement_quantity()
             estoque.set_status()
            
-            return return_response(request, status.HTTP_200_OK, {'message': 'Book reserved', 'reservation_id': reservation.id})
+            return return_response(request, status.HTTP_201_CREATED, {'message': 'Reservation created', 'reservation_id': reservation.id})
 
     @action(detail=True, methods=['DELETE'])
     def delete_reservation(self, request, pk=None):

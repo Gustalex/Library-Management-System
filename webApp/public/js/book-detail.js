@@ -66,11 +66,16 @@ class BookDetailController {
                             <p>${book.synopsis}</p>
                         </div>
                         <div class="book-actions">
-                            <button class="reserve-button">Reserve</button>
+                            <button class="reserve-button" id="reserve-button">Reserve</button>
                             <button class="borrow-button">Borrow</button>
                         </div>
                     </div>
                 `;
+
+                document.getElementById('reserve-button').addEventListener('click', () => {
+                    window.location.href = `../views/reserve.html?id=${book.id}`;
+                });
+
             } catch (error) {
                 console.error('Error getting book detail', error);
                 alert('Error getting book detail');

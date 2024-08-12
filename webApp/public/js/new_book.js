@@ -115,9 +115,9 @@ class NewBookController {
             if (bookData.length > 0) {
                 this.autofillFields(bookData[0]);
                 return true;
-            } else {
-                return false;
             }
+            return false;
+            
         } catch (error) {
             console.error('Error checking ISBN', error);
         }

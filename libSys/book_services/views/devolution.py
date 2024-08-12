@@ -39,25 +39,6 @@ class DevolutionViewSet(ViewSet):
             return True
         return False
 
-    
-    @action(detail=True, methods=['GET'])
-    def check_fine(self, request, pk=None):
-        if not pk:
-            return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'borrow_id is required'})
-        
-        try:
-            borrow = Borrow.objects.get(id=pk)
-        except Borrow.DoesNotExist:
-            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrow not found'})
-        
-        if self.check_if_fine_exists(borrow.id):
-            return return_response(request, status.HTTP_200_OK, {'message': 'Fine exists'})
-        
-        return return_response(request, status.HTTP_200_OK, {'message': 'Fine not exists'})
-
-
-        
-    
     @action(detail=True, methods=['PATCH'])
     def do_devolution(self, request):
         book_id = request.data.get('book_id')
