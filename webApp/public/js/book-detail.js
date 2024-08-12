@@ -29,6 +29,19 @@ class BookDetailController {
         }
     }
 
+    static async deleteBook(bookId){
+        try{
+            const response = await axios.delete(`http://127.0.0.1:8000/book/book/${bookId}/`);
+            if(response.status === 204){
+                alert('Book deleted successfully');
+                return true;
+            }
+        }catch(error){
+            console.error('Error deleting book', error);
+            alert('Error deleting book');
+        }
+    }
+
     static async showBookDetail() {
         const urlParams = new URLSearchParams(window.location.search);
         const bookId = urlParams.get('id');
@@ -68,6 +81,7 @@ class BookDetailController {
                         <div class="book-actions">
                             <button class="reserve-button" id="reserve-button">Reserve</button>
                             <button class="borrow-button" id="borrow-button">Borrow</button>
+                            <button class="delete-button" id="delete-button">Delete</button>
                         </div>
                     </div>
                 `;
@@ -78,6 +92,15 @@ class BookDetailController {
 
                 document.getElementById('borrow-button').addEventListener('click', () => {
                     window.location.href = `../views/borrow.html?id=${book.id}`;
+                });
+
+                document.getElementById('delete-button').addEventListener('click', async () => {
+                    if (confirm('Are you sure you want to delete this book?')) {
+                        const success = await this.deleteBook(book.id);
+                        if (success) {
+                            window.location.href = '../views/book-list.html';
+                        }
+                    }
                 });
 
             } catch (error) {

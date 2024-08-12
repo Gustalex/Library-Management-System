@@ -17,16 +17,21 @@ class BookViewSet(ModelViewSet):
     def perform_create(self, serializer):
         isbn = serializer.validated_data['isbn']
         
-        if Book.objects.filter(isbn=isbn).exists():
-            book = Book.objects.get(isbn=isbn)
-            estoque = Estoque.objects.filter(book=book).first()
-            if estoque:
-                estoque.increment_quantity()
-                estoque.set_status()
-                estoque.save()
-                return Response({'detail': 'Quantidade incrementada no estoque.'}, status=status.HTTP_200_OK)
+        existing_book = Book.all_objects.filter(isbn=isbn).first()
+        
+        if existing_book:
+            if existing_book.is_deleted:
+                estoque = Estoque.objects.filter(book=existing_book).first()
+                if estoque:
+                    estoque.quantity=1
+                    estoque.set_status()
+                    estoque.save()
+                    existing_book.rollback()
+                    return Response({'detail': 'Livro restaurado e quantidade no estoque incrementada.'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'detail': 'Estoque não encontrado para o livro existente.'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({'detail': 'Estoque não encontrado para o livro existente.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': 'Livro com este ISBN já existe.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             book = serializer.save()
             Estoque.objects.create(book=book, quantity=1)
@@ -36,8 +41,8 @@ class BookViewSet(ModelViewSet):
     def check_isbn(self, request):
         isbn = request.query_params.get('isbn', None)
         
-        if isbn is not None:
-            books = Book.objects.filter(isbn=isbn) 
+        if isbn:
+            books = Book.all_objects.filter(isbn=isbn)
             serializer = BookSerializer(books, many=True)
             return Response(serializer.data)
         
