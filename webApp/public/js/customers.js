@@ -52,9 +52,11 @@ class CustomersController{
                 row.appendChild(cpfCell);
     
                 const actionCell = document.createElement('td');
+
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
                 deleteButton.className = 'delete-button btn btn-danger';
+                deleteButton.style.marginRight = '10px';
                 deleteButton.onclick = async () => {
                     if(confirm('Are you sure you want to delete this customer?')){
                         if(await this.deleteCustomer(customer.id)){
@@ -62,13 +64,17 @@ class CustomersController{
                         }
                     }
                 }
+
                 const editButton = document.createElement('a');
                 editButton.textContent = 'Edit';
                 editButton.className = 'return-button btn btn-primary';
                 editButton.href = `update-user.html?customerId=${customer.id}`;
+
                 actionCell.appendChild(deleteButton);
                 actionCell.appendChild(editButton);
+
                 row.appendChild(actionCell);
+
     
                 customersTableBody.appendChild(row);
                 
