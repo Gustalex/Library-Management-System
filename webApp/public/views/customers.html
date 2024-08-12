@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="../css/style.css">
 
     <title>LibSys</title>
-
 </head>
 <body>
     <header class="main-header-container">
@@ -50,26 +49,33 @@
     </aside>
     <main class="main-content-container">
         <div class="main-content container">
-            <section class="popular-books-intro">
-                <h2>Trending books</h2>
-            </section>
-            <div class="main-content main-content-list" id="trending-books-list">
-                <!-- Livros populares aqui -->
-            </div>
+            <table class="loans-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>CPF</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="customers-list">
+                    <!-- Os clientes serão listados aqui -->
+                </tbody>
+            </table>
         </div>
     </main>
+    
     <footer class="main-footer">
         <div class="developer">
             <a href="https://github.com/Gustalex" target="_blank" rel="noreferrer noopener"> By Gustavo Silva</a>
         </div>
     </footer>
-
     <script>
         document.querySelector('.sidebar-toggle').addEventListener('click', function() {
             document.querySelector('.sidebar').classList.toggle('sidebar-open');
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="../js/home.js"></script>
+    <script src="../js/customers.js"></script>
 </body>
 </html>
