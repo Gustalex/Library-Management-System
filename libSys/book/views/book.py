@@ -17,24 +17,12 @@ class BookViewSet(ModelViewSet):
     def perform_create(self, serializer):
         isbn = serializer.validated_data['isbn']
         
-        existing_book = Book.all_objects.filter(isbn=isbn).first()
+        existing_book = Book.objects.filter(isbn=isbn).first()
         
         if existing_book:
-            estoque = Estoque.objects.filter(book=existing_book,is_deleted=False).first()
+            estoque = Estoque.objects.filter(book=existing_book).first()
             estoque.increment_quantity()
             estoque.set_status()
-            if existing_book.is_deleted:
-                estoque = Estoque.objects.filter(book=existing_book).first()
-                if estoque:
-                    estoque.quantity=1
-                    estoque.set_status()
-                    estoque.save()
-                    existing_book.rollback()
-                    return Response({'detail': 'Livro restaurado e quantidade no estoque incrementada.'}, status=status.HTTP_200_OK)
-                else:
-                    return Response({'detail': 'Estoque não encontrado para o livro existente.'}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response({'detail': 'Livro com este ISBN já existe.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             book = serializer.save()
             Estoque.objects.create(book=book, quantity=1)
@@ -46,7 +34,7 @@ class BookViewSet(ModelViewSet):
         
         if isbn:
             try:
-                books = Book.all_objects.filter(isbn=isbn)
+                books = Book.objects.filter(isbn=isbn)
                 serializer = BookSerializer(books, many=True)
                 return Response(serializer.data)
             except Exception as e:

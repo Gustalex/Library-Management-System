@@ -105,7 +105,6 @@ class BookDetailController {
 
             } catch (error) {
                 console.error('Error getting book detail', error);
-                alert('Error getting book detail');
             }
         }
     }
