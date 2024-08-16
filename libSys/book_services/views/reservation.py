@@ -5,6 +5,7 @@ from django.db import transaction
 
 from book_services.helper import return_response, check_stock
 from book_services.models import Reservation
+from book_services.serializers import ReservationSerializer
 
 from user.models import Customer
 from book.models import Book, Estoque
@@ -53,3 +54,18 @@ class ReservationViewSet(ViewSet):
         reservation.inactivate_reservation()
         reservation.delete()
         return return_response(request, status.HTTP_200_OK, {'message': 'Reservation canceled'})
+    
+    @action(detail=True, methods=['GET'])
+    def get_reservation(self, request, pk=None):
+        try:
+            reservation=Reservation.objects.get(id=pk)
+            serializer=ReservationSerializer(reservation)
+            return return_response(request, status.HTTP_200_OK, serializer.data)
+        except Reservation.DoesNotExist:
+            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrow not found'})
+        
+    @action(detail=False, methods=['GET'])
+    def list_reservations(self, request):
+        reservations=Reservation.objects.all()
+        serializer=ReservationSerializer(reservations,many=True)
+        return return_response(request, status.HTTP_200_OK, serializer.data)

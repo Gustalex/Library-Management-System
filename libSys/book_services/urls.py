@@ -14,4 +14,6 @@ urlpatterns = [
     path('popular/', PopularityViewSet.as_view({'get': 'get_popular_books'}), name='get_popular_books'),
     path('borrow/loans/', BorrowViewSet.as_view({'get': 'list_borrows'}), name='list_borrows'),
     path('borrow/<int:pk>/get_loan/', BorrowViewSet.as_view({'get': 'get_borrow'}), name='get_borrow'),
+    path('reservation/<int:pk>/get_reservation/', ReservationViewSet.as_view({'get':'get_reservation'}), name='get_reservation'),
+    path('reservation/reservations/', ReservationViewSet.as_view({'get':'list_reservations'}),name='list_reservations')
 ]

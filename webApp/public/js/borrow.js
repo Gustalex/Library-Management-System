@@ -95,13 +95,23 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     observeElement('new-borrow-form', async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlCpf = urlParams.get('cpf');
         const cpfField = document.getElementById('cpf');
+
+        if (urlCpf && cpfField) {
+            cpfField.value = urlCpf;
+            await BorrowController.checkCpf(urlCpf);
+        }
+
         cpfField.addEventListener('blur', async () => {
-            const cpf = cpfField.value;
-            if (cpf) {
-                const cpfExists = await BorrowController.checkCpf(cpf);
-                if (!cpfExists) {
-                    BorrowController.autoFillForm({});
+            if (!urlCpf) {  // Só executa se não houver um CPF na URL
+                const cpf = cpfField.value;
+                if (cpf) {
+                    const user = await BorrowController.checkCpf(cpf);
+                    if (!user) {
+                        BorrowController.autoFillForm({});
+                    }
                 }
             }
         });
