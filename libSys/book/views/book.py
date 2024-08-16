@@ -15,18 +15,38 @@ class BookViewSet(ModelViewSet):
     filterset_class = BookFilter
 
     def perform_create(self, serializer):
-        isbn = serializer.validated_data['isbn']
-        
-        existing_book = Book.objects.filter(isbn=isbn).first()
-        
-        if existing_book:
-            estoque = Estoque.objects.filter(book=existing_book).first()
-            estoque.increment_quantity()
-            estoque.set_status()
-        else:
+        try:
+            isbn = serializer.validated_data['isbn']
+            existing_book = self.get_existing_book(isbn)
+            
+            if existing_book:
+                self.update_existing_book_stock(existing_book)
+            else:
+                self.create_new_book_and_stock(serializer)
+        except Exception as e:
+            return Response({'detail': f'Ocorreu um erro: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def get_existing_book(self, isbn):
+        return Book.objects.filter(isbn=isbn).first()
+
+    def update_existing_book_stock(self, book):
+        try:
+            estoque = Estoque.objects.filter(book=book).first()
+            if estoque:
+                estoque.increment_quantity()
+                estoque.set_status()
+                estoque.save()
+            else:
+                raise ValueError("Estoque não encontrado para o livro existente.")
+        except Exception as e:
+            raise ValueError(f"Erro ao atualizar estoque: {str(e)}")
+
+    def create_new_book_and_stock(self, serializer):
+        try:
             book = serializer.save()
             Estoque.objects.create(book=book, quantity=1)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            raise ValueError(f"Erro ao criar novo livro e estoque: {str(e)}")
         
     @action(detail=False, methods=['get'])
     def check_isbn(self, request):
