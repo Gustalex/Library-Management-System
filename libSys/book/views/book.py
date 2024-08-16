@@ -20,6 +20,9 @@ class BookViewSet(ModelViewSet):
         existing_book = Book.all_objects.filter(isbn=isbn).first()
         
         if existing_book:
+            estoque = Estoque.objects.filter(book=existing_book,is_deleted=False).first()
+            estoque.increment_quantity()
+            estoque.set_status()
             if existing_book.is_deleted:
                 estoque = Estoque.objects.filter(book=existing_book).first()
                 if estoque:
@@ -42,8 +45,11 @@ class BookViewSet(ModelViewSet):
         isbn = request.query_params.get('isbn', None)
         
         if isbn:
-            books = Book.all_objects.filter(isbn=isbn)
-            serializer = BookSerializer(books, many=True)
-            return Response(serializer.data)
-        
-        return Response({'detail': 'ISBN não informado.'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                books = Book.all_objects.filter(isbn=isbn)
+                serializer = BookSerializer(books, many=True)
+                return Response(serializer.data)
+            except Exception as e:
+                return Response({'detail': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({'detail': 'ISBN não informado.'}, status=status.HTTP_400_BAD_REQUEST)
