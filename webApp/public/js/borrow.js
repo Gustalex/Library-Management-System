@@ -69,6 +69,9 @@ class BorrowController{
             if (error.response && error.response.status === 404) {
                 alert('Book is not available for borrow');
             }
+            else if (error.response && error.response.status === 400) {
+                alert('User has a fine and cannot borrow books');
+            }
             else {
                 console.error('Error creating borrow', error);
                 alert('Failed to create borrow.');
