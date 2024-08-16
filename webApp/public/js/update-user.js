@@ -1,58 +1,50 @@
+function removeCpfFormatting(cpf) {
+    return cpf.replace(/[.-]/g, '');
+}
+
+function fillCustomerData(customerData) {
+    document.getElementById('name').value = customerData.name;
+    document.getElementById('email').value = customerData.email;
+    document.getElementById('cpf').value = customerData.cpf;
+}
+
 class UpdateUserController {
 
-    static autoFillForm(user) {
-        const nameField = document.getElementById('name');
-        const emailField = document.getElementById('email');
-        const cpfField = document.getElementById('cpf');
-
-        if (nameField && !nameField.value) nameField.value = user.name || '';
-        if (emailField && !emailField.value) emailField.value = user.email || '';
-        if (cpfField && !cpfField.value) cpfField.value = user.cpf || '';
+    static getCustomerData(customer) {
+        return {
+            name: customer.name,
+            email: customer.email,
+            cpf: customer.cpf
+        };
     }
 
-    static removeCpfFormatting(cpf) {
-        return cpf.replace(/[.-]/g, '');
-    }
-
-    static async checkCpf(cpf) {
+    static async getCustomerById(customerId) {
         try {
-            const cleanedCpf = this.removeCpfFormatting(cpf);
-            const checkResponse = await axios.get(`http://127.0.0.1:8000/user/customers/check-cpf/?cpf=${cleanedCpf}`);
-            const cpfData = checkResponse.data;
-            if (cpfData.length > 0) {
-                this.autoFillForm(cpfData[0]);
-                return cpfData[0];
-            }
-            return false;
+            const response = await axios.get(`http://127.0.0.1:8000/user/customers/${customerId}/`);
+            return this.getCustomerData(response.data);
         } catch (error) {
-            console.error('Error checking CPF', error);
-            throw new Error('Error checking CPF');
+            console.error('Error fetching customer', error);
+            alert('Error fetching customer');
         }
     }
 
     static async updateUser(event) {
         event.preventDefault();
 
-        const cpf = document.getElementById('cpf').value;
-
-        const userData = await this.checkCpf(cpf);
-
-        if (!userData) {
-            alert("CPF not found or invalid.");
-            return;
-        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const customerId = urlParams.get('id');
+        
 
         const formData = new FormData(document.getElementById('update-user-form'));
-        const user_id = userData.id;
 
         const data = {
             name: formData.get('name'),
             email: formData.get('email'),
-            cpf: cpf,
+            cpf: formData.get('cpf')
         };
 
         try {
-            const response = await axios.patch(`http://127.0.0.1:8000/user/customers/${user_id}/`, data, {
+            const response = await axios.patch(`http://127.0.0.1:8000/user/customers/${customerId}/`, data, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -66,10 +58,17 @@ class UpdateUserController {
             alert('Error updating user');
         }
     }
-
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const customerId = urlParams.get('id');
+
+    if (customerId) {
+        const userData = await UpdateUserController.getCustomerById(customerId);
+        fillCustomerData(userData);
+    }
+
     const observeElement = (elementId, callback) => {
         const observer = new MutationObserver((_, observer) => {
             const element = document.getElementById(elementId);
@@ -82,21 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     observeElement('update-user-form', async () => {
-        const cpfField = document.getElementById('cpf');
-        cpfField.addEventListener('blur', async () => {
-            const cpf = cpfField.value;
-            if (cpf) {
-                const cpfExists = await UpdateUserController.checkCpf(cpf);
-                if (!cpfExists) {
-                    UpdateUserController.autoFillForm({});
-                }
-            }
-        });
-
         const updateForm = document.getElementById('update-user-form');
         updateForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
             await UpdateUserController.updateUser(event);
         });
     });
-
 });

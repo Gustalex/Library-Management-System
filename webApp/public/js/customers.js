@@ -68,7 +68,7 @@ class CustomersController{
                 const editButton = document.createElement('a');
                 editButton.textContent = 'Edit';
                 editButton.className = 'return-button btn btn-primary';
-                editButton.href = 'update-user.html';
+                editButton.href = 'update-user.html?id='+customer.id;
 
                 actionCell.appendChild(deleteButton);
                 actionCell.appendChild(editButton);
