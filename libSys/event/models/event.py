@@ -10,6 +10,7 @@ def validate_date(value):
     
 class Event(FactoryModel):
     name = models.CharField(max_length=50)
+    description = models.TextField(blank=True, null=True)
     date = models.DateField()
     
     class Meta:

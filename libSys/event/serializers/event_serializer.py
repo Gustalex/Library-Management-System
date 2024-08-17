@@ -8,4 +8,5 @@ class EventSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'date',
+            'description',
         ]
