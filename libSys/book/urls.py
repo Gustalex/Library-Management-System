@@ -11,4 +11,5 @@ router.register(r'estoque', EstoqueViewSet, basename='estoque')
 urlpatterns = [
     path('', include(router.urls)),
     path('check_isbn/', BookViewSet.as_view({'get': 'check_isbn'}), name='check_isbn'),
+    path('cover/<int:pk>/', CoverViewSet.as_view({'post':'update_cover'}), name='update_cover'),
 ]

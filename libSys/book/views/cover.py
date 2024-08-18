@@ -23,3 +23,23 @@ class CoverViewSet(ViewSet):
         cover.save()
 
         return Response({'message': 'Cover uploaded successfully'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def update_cover(self, request, pk=None):
+        try:
+            book = Book.objects.get(pk=pk)
+        except Book.DoesNotExist:
+            return Response({'error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        cover_image = request.FILES.get('cover_image')
+        if not cover_image:
+            return Response({'error': 'No cover image provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        cover = Cover.objects.filter(book=book).first()
+        if cover:
+            cover.hard_delete()
+
+        new_cover = Cover(book=book, cover_image=cover_image)
+        new_cover.save()
+
+        return Response({'message': 'Cover updated successfully'}, status=status.HTTP_200_OK)

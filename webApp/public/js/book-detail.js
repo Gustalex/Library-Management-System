@@ -81,6 +81,7 @@ class BookDetailController {
                         <div class="book-actions">
                             <button class="reserve-button" id="reserve-button">Reserve</button>
                             <button class="borrow-button" id="borrow-button">Borrow</button>
+                            <button class="update-button" id="edit-button">Edit</button>
                             <button class="delete-button" id="delete-button">Delete</button>
                         </div>
                     </div>
@@ -92,6 +93,10 @@ class BookDetailController {
 
                 document.getElementById('borrow-button').addEventListener('click', () => {
                     window.location.href = `../views/borrow.html?id=${book.id}`;
+                });
+
+                document.getElementById('edit-button').addEventListener('click', () => {
+                    window.location.href = `../views/update-book.html?id=${book.id}`;
                 });
 
                 document.getElementById('delete-button').addEventListener('click', async () => {

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css"
+    integrity="sha512-P9vJUXK+LyvAzj8otTOKzdfF1F3UYVl13+F8Fof8/2QNb8Twd6Vb+VD52I7+87tex9UXxnzPgWA3rH96RExA7A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css"
+    integrity="sha512-sVSECYdnRMezwuq5uAjKQJEcu2wybeAPjU4VJQ9pCRcCY4pIpIw4YMHIOQ0CypfwHRvdSPbH++dA3O4Hihm/LQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css"
+    integrity="sha512-tk4nGrLxft4l30r9ETuejLU0a3d7LwMzj0eXjzc16JQj+5U1IeVoCuGLObRDc3+eQMUcEQY1RIDPGvuA7SNQ2w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/style.css">
+
+    <title>LibSys</title>
+
+</head>
+<body>
+    <header class="main-header-container">
+        <div class="main-header container">
+            <h1>
+                <a href="../views/home.html" class="main-logo-link">
+                    <i class="fas fa-book main-logo-icon"></i>
+                    <span class="main-logo-text">LibSys</span>
+                </a>
+                <button class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </h1>
+        </div>
+    </header>    
+    <aside class="sidebar">
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                <li><a href="../views/new_book.html" class="sidebar-item">New Book</a></li>
+                <li><a href="../views/catalog.html" class="sidebar-item">Catalog</a></li>
+                <li><a href="../views/reservations.html" class="sidebar-item">Reservations</a></li>
+                <li><a href="../views/loans.html" class="sidebar-item">Loans</a></li>
+                <li><a href="../views/fines.html" class="sidebar-item">Fines</a></li>
+                <li><a href="../views/customers.html" class="sidebar-item">Customers</a></li>
+                <li><a href="../views/new-event.html" class="sidebar-item">New Event</a></li>
+                <!-- mais itens de menu aqui -->
+            </ul>
+        </div>
+    </aside>
+    <main class="main-content-container">
+        <div class="main-content container">
+            <form class="new-book-form" id="update-book-form">
+                <div class="form-group">
+                    <label for="isbn">ISBN</label>
+                    <input type="text" id="isbn" name="isbn" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <select id="genre" name="genre" class="form-input">
+                        <option value="" disabled selected>Select a genre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" id="author" name="author" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="edition">Edition</label>
+                    <input type="text" id="edition" name="edition" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="synopsis">Synopsis</label>
+                    <textarea id="synopsis" name="synopsis" class="form-input" rows="6"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="cover">Cover</label>
+                    <input type="file" id="cover" name="cover" class="form-input">
+                </div>
+                <button type="submit" class="form-button">Update Book</button>
+            </form>
+                        
+        </div>
+    </main>
+    <footer class="main-footer">
+        <div class="developer">
+            <a href="https://github.com/Gustalex" target="_blank" rel="noreferrer noopener"> By Gustavo Silva</a>
+        </div>
+    </footer>
+    
+    <script>
+        document.querySelector('.sidebar-toggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('sidebar-open');
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../js/update-book.js"></script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 class HomeController {
     static async getTrendingBooks() {
-        console.log('Getting trending books');
         try {
             const response = await axios.get('http://127.0.0.1:8000/book-services/popular/');
             HomeController.updateTrendingBooks(response.data);
