@@ -7,6 +7,7 @@ class BorrowSerializer(serializers.ModelSerializer):
     book_name = serializers.SerializerMethodField()
     customer_name = serializers.SerializerMethodField()
     customer_email = serializers.SerializerMethodField()
+    customer_cpf = serializers.SerializerMethodField()
     
     class Meta:
         model = Borrow
@@ -17,6 +18,7 @@ class BorrowSerializer(serializers.ModelSerializer):
             'customer',
             'customer_name',
             'customer_email',
+            'customer_cpf',
             'initial_date',
             'final_date',
             'active',
@@ -30,3 +32,6 @@ class BorrowSerializer(serializers.ModelSerializer):
 
     def get_customer_email(self, obj):
         return obj.customer.email
+    
+    def get_customer_cpf(self, obj):
+        return obj.customer.cpf

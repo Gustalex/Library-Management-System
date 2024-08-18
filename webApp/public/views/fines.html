@@ -50,11 +50,21 @@
         </div>
     </aside>
     <main class="main-content-container">
+        <div class="search-container">
+            <div class="container">
+                <form id="search-form" class="search-form">
+                    <input type="text" id="search-name" class="search-input" placeholder="Name">
+                    <input type="text" id="search-cpf" class="search-input" placeholder="CPF">
+                    <button type="submit" class="search-button">Search</button>
+                </form>
+            </div>
+        </div>
         <div class="main-content container">
             <table class="loans-table">
                 <thead>
                     <tr>
                         <th>Customer</th>
+                        <th>CPF</th>
                         <th>Book</th>
                         <th>Loan Date</th>
                         <th>Return Date</th>

@@ -1,10 +1,12 @@
+function formatCpf(cpf){
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
 class ReservationController{
 
-    static async getActiveReservation(){
+    static async getActiveReservation(filters={}){
         try{
-            const response = await axios.get('http://127.0.0.1:8000/book-services/reservation/reservations/')
-            const activeReservations = response.data.filter(reservation => reservation.active === true );
-            console.log('active reservations', activeReservations);
+            const response = await axios.get('http://127.0.0.1:8000/book-services/reservation/reservations/', {params: filters});
+            const activeReservations = response.data;
             return activeReservations;
         }catch(error){
             console.error('Error fetching reservations', error);
@@ -23,9 +25,9 @@ class ReservationController{
         }
     }
 
-    static async listReservations(){
+    static async listReservations(filters={}){
         try{
-            const reservations = await this.getActiveReservation();
+            const reservations = await this.getActiveReservation(filters);
             const reservationsTableBody = document.getElementById('active-reservations');
             reservationsTableBody.innerHTML='';
     
@@ -35,6 +37,10 @@ class ReservationController{
                 const customerCell = document.createElement('td');
                 customerCell.textContent = reservation.customer_name;
                 row.appendChild(customerCell);
+
+                const cpfCell = document.createElement('td');
+                cpfCell.textContent = formatCpf(reservation.customer_cpf);
+                row.appendChild(cpfCell);
     
                 const bookCell = document.createElement('td');
                 bookCell.textContent = reservation.book_name;
@@ -50,7 +56,7 @@ class ReservationController{
                 cancelButton.onclick = async () => {
                     if(confirm('Are you sure you want to cancel this reservation?')){
                         if(await this.handleCancelReservation(reservation.id)){
-                            this.listReservations();
+                            this.listReservations(filters);
                         }
                     }
                 }
@@ -73,20 +79,33 @@ class ReservationController{
     }
     
 }
-document.addEventListener('DOMContentLoaded', () => {
-    const observeElement = (elementId, callback) => {
-        const observer = new MutationObserver((_, observer) => {
-            const element = document.getElementById(elementId);
-            if (element) {
-                callback(element);
-                observer.disconnect();
+document.addEventListener('DOMContentLoaded', async () => {
+    const reservationsTableBody = document.getElementById('active-reservations');
+    if(reservationsTableBody){
+        ReservationController.listReservations();
+    }
+
+    const searchForm = document.getElementById('search-form');
+    if(searchForm){
+        searchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+           
+            const customerNameElement = document.getElementById('search-name');
+            const cpfElement = document.getElementById('search-cpf');
+
+            if(customerNameElement || cpfElement){
+                const customerName = customerNameElement.value.trim();
+                const cpf = cpfElement.value.trim();
+
+                const filters = {};
+                if(customerName) filters.customer_name = customerName;
+                if(cpf) filters.customer_cpf = cpf;
+
+                await ReservationController.listReservations(filters); 
             }
         });
-        observer.observe(document, { childList: true, subtree: true });
-    };
-
-    observeElement('active-reservations', async () => {
-        await ReservationController.listReservations();
-    });
-
+    }
+    else{
+        console.error('Search form not found');
+    }
 });

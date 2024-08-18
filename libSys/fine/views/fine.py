@@ -8,7 +8,12 @@ from user.models import Customer
 from fine.models import Fine
 from fine.serializers import FineSerializer
 
+from django_filters.rest_framework import DjangoFilterBackend
+from fine.filters import FineFilter
+
 class FineViewSet(ViewSet):
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = FineFilter
     
     @action(detail=True, methods=['POST'])
     def create_new_fine(self, request):
@@ -47,8 +52,14 @@ class FineViewSet(ViewSet):
     
     @action(detail=False, methods=['GET'])
     def list_fines(self, request):
-        fines = Fine.objects.filter(status=True)
-        return return_response(request, status.HTTP_200_OK, FineSerializer(fines, many=True).data)
+        try:
+            filter_backends=self.filter_backends
+            queryset = Fine.objects.filter(status=True)
+            filtered_queryset = DjangoFilterBackend().filter_queryset(request, queryset, self)
+            serializer=FineSerializer(filtered_queryset, many=True)
+            return return_response(request, status.HTTP_200_OK, serializer.data)
+        except Fine.DoesNotExist:
+            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'No fines found'})
     
     
         

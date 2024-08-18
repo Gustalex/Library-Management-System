@@ -4,12 +4,11 @@ function formatCpf(cpf){
 
 class CustomersController{
 
-    static async getCustomers(){
-        try{
-            const response = await axios.get('http://127.0.0.1:8000/user/customers/');
-            console.log(response.data);
+    static async getCustomers(filters = {}) {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/user/customers/', { params: filters });
             return response.data;
-        }catch(error){
+        } catch (error) {
             console.error('Error fetching customers', error);
             alert('Error fetching customers');
         }
@@ -28,11 +27,9 @@ class CustomersController{
         }
     }
 
-    static async listCustomers(){
-
-        try{
-
-            const customers = await this.getCustomers();
+    static async listCustomers(filters = {}) {
+        try {
+            const customers = await this.getCustomers(filters);
             const customersTableBody = document.getElementById('customers-list');
             customersTableBody.innerHTML = '';
     
@@ -60,7 +57,7 @@ class CustomersController{
                 deleteButton.onclick = async () => {
                     if(confirm('Are you sure you want to delete this customer?')){
                         if(await this.deleteCustomer(customer.id)){
-                            this.listCustomers();
+                            this.listCustomers(filters);
                         }
                     }
                 }
@@ -68,24 +65,20 @@ class CustomersController{
                 const editButton = document.createElement('a');
                 editButton.textContent = 'Edit';
                 editButton.className = 'return-button btn btn-primary';
-                editButton.href = 'update-user.html?id='+customer.id;
+                editButton.href = 'update-user.html?id=' + customer.id;
 
                 actionCell.appendChild(deleteButton);
                 actionCell.appendChild(editButton);
 
                 row.appendChild(actionCell);
-
     
                 customersTableBody.appendChild(row);
-                
             });
-        }catch(error){
+        } catch (error) {
             console.error('Error listing customers', error);
             alert('Error listing customers');
         }
     }
-
-
 }
 document.addEventListener('DOMContentLoaded', () => {
     const observeElement = (elementId, callback) => {
@@ -103,4 +96,16 @@ document.addEventListener('DOMContentLoaded', () => {
         await CustomersController.listCustomers();
     });
 
+    document.getElementById('search-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const name = document.getElementById('search-name').value.trim();
+        const cpf = document.getElementById('search-cpf').value.trim();
+
+        const filters = {};
+        if (name) filters.name = name;
+        if (cpf) filters.cpf = cpf;
+
+        await CustomersController.listCustomers(filters);
+    });
 });

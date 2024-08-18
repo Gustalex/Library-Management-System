@@ -11,7 +11,12 @@ from user.models import Customer
 from book.models import Book, Estoque
 from fine.models import Fine
 
+from django_filters.rest_framework import DjangoFilterBackend
+from book_services.filters import ReservationFilter
+
 class ReservationViewSet(ViewSet):
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ReservationFilter
     
     @action(detail=True, methods=['POST'])
     def do_reservation(self, request):
@@ -66,6 +71,12 @@ class ReservationViewSet(ViewSet):
         
     @action(detail=False, methods=['GET'])
     def list_reservations(self, request):
-        reservations=Reservation.objects.all()
-        serializer=ReservationSerializer(reservations,many=True)
-        return return_response(request, status.HTTP_200_OK, serializer.data)
+        try:
+            filter_backends=self.filter_backends
+            queryset=Reservation.objects.filter(active=True)
+            filtered_queryset=DjangoFilterBackend().filter_queryset(request, queryset, self)
+            serializer=ReservationSerializer(filtered_queryset, many=True)
+            return return_response(request, status.HTTP_200_OK, serializer.data)
+        except Reservation.DoesNotExist:
+            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'No reservations found'})
+        

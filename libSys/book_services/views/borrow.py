@@ -1,15 +1,24 @@
+from django.db import transaction
+
 from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import action
 from rest_framework import status
-from django.db import transaction
+
 from book_services.helper import return_response, find_reservation_by_book_and_customer, check_stock
 from book_services.models import Borrow, Reservation, Popularity
+
 from user.models import Customer
 from book.models import Book, Estoque
 from fine.models import Fine
+
 from book_services.serializers import BorrowSerializer
 
+from django_filters.rest_framework import DjangoFilterBackend
+from book_services.filters import BorrowFilter
+
 class BorrowViewSet(ViewSet):
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = BorrowFilter
 
     def update_popularity_by_book_id(self, book_id):
         book = Book.objects.get(id=book_id)
@@ -89,9 +98,15 @@ class BorrowViewSet(ViewSet):
     
     @action(detail=False, methods=['GET'])
     def list_borrows(self, request):
-        borrows = Borrow.objects.all()
-        serializer=BorrowSerializer(borrows, many=True)
-        return return_response(request, status.HTTP_200_OK, serializer.data)
+        try:
+            filter_backends = self.filter_backends
+            queryset = Borrow.objects.filter(active=True)
+            filtered_queryset=DjangoFilterBackend().filter_queryset(request, queryset, self)
+            serializer=BorrowSerializer(filtered_queryset, many=True)
+            return return_response(request, status.HTTP_200_OK, serializer.data)
+        except Borrow.DoesNotExist:
+            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrows not found'})
+        
     
     @action(detail=True, methods=['GET'])
     def get_borrow(self, request, pk=None):
