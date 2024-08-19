@@ -86,5 +86,5 @@ Clone the `libsys` project repository to your local machine:
 
 
 3. **Access the Web Aplication**
-   Access the web application opening any HTML file in the `webApp\views` directory with live server.
+   Access the web application opening any HTML file in the `webApp\public\views` directory with live server.
 
