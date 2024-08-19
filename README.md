@@ -51,7 +51,7 @@ Clone the `libsys` project repository to your local machine:
     Create a new Python virtual environment in the project directory:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # at Windows use `venv\Scripts\activate`
+   source venv/bin/activate  # on Windows use `venv\Scripts\activate`
    ```
 
 2. **Install Required Dependencies**
@@ -73,15 +73,16 @@ Clone the `libsys` project repository to your local machine:
 ### Step 3: Run the Project
 
 1. **Run the Django Server**
+   If it is the first time you are running the project, you will need to create the database and run the migrations:
+   ```bash
+    python manage.py migrate
+    ```
+
    Run the Django development server using the `manage.py` script:
    ```bash
    python manage.py runserver
    ```
 
-   if it is the first time you are running the project, you will need to create the database and run the migrations:
-   ```bash
-    python manage.py migrate
-    ```
 
 2. **Access the Web Aplication**
    Access the web application opening any HTML file in the `webApp\views` directory with live server.
