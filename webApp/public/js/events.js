@@ -1,16 +1,16 @@
 class EventsController{
-    static async listEvents(){
+    static async listEvents(filters={}){
         try{
-            const response = await axios.get('http://127.0.0.1:8000/event/event/');
+            const response = await axios.get('http://127.0.0.1:8000/event/event/', {params: filters});
             return response.data;
         }catch(error){
             console.error('Error fetching events', error);
         }
     }
 
-    static async populateEvents(){
+    static async populateEvents(filters={}){
         try{
-            const events = await this.listEvents();
+            const events = await this.listEvents(filters);
             const eventList = document.getElementById('event-list');
             eventList.innerHTML = '';
 
@@ -61,6 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     observeElement('event-list', async () => {
         await EventsController.populateEvents();
+    });
+
+    document.getElementById('search-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const name = document.getElementById('search-name').value.trim();
+        const date = document.getElementById('search-date').value.trim();
+
+        const filters = {};
+        if(name) filters.name = name;
+        if(date) filters.date = date;
+
+        await EventsController.populateEvents(filters);
     });
 
 });
