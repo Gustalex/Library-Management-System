@@ -73,6 +73,7 @@ Clone the `libsys` project repository to your local machine:
 ### Step 3: Run the Project
 
 1. **Run the Django Server**
+
    If it is the first time you are running the project, you will need to create the database and run the migrations:
    ```bash
     python manage.py migrate
@@ -84,6 +85,6 @@ Clone the `libsys` project repository to your local machine:
    ```
 
 
-2. **Access the Web Aplication**
+3. **Access the Web Aplication**
    Access the web application opening any HTML file in the `webApp\views` directory with live server.
 
