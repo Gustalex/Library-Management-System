@@ -79,7 +79,7 @@ class BorrowViewSet(ViewSet):
 
                 return return_response(request, status.HTTP_201_CREATED, {'message': 'Book borrowed successfully'})
             
-            return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Error borrowing book'})
+            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book is not available'})
                 
                 
     @action(detail=True, methods=['DELETE'])

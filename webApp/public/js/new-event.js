@@ -87,8 +87,8 @@ class EventController {
             });
             if (response.status === 201) {
                 await this.handleEmail(eventData);
-                alert('Event created successfully');
             }
+            alert('Event created successfully');
         } catch (error) {
             console.log('Error creating event', error);
             alert('Error creating event');
