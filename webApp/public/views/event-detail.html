@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="../css/style.css">
 
     <title>LibSys</title>
-
 </head>
 <body>
     <header class="main-header-container">
@@ -51,39 +50,27 @@
             </ul>
         </div>
     </aside>
-    <main class="main-content-container catalog-page">
-        <div class="search-container">
-            <div class="container">
-                <form id="search-form" class="search-form">
-                    <input type="text" id="search-title" class="search-input" placeholder="Título">
-                    <input type="text" id="search-author" class="search-input" placeholder="Autor">
-                    <input type="text" id="search-edition" class="search-input" placeholder="Edição">
-                    <select id="search-genre" class="search-input">
-                        <!-- Gêneros serão carregados dinamicamente -->
-                    </select>
-                    <button type="submit" class="search-button"> <i class="fas fa-search"></i></button>
-                </form>
-            </div>
-        </div>
+    <main class="main-content-container">
         <div class="main-content container">
-            <div class="book-list" id="book-list">
-                <!-- Os livros serão adicionados aqui dinamicamente -->
-            </div>
+            <section class="popular-books-intro">
+                <h2>Event Detail</h2>
+            </section>
+            <div class="book-detail-container" id="event-detail">
+                <!-- Detalhes do evento serão inseridos aqui -->
+            </div>            
         </div>
     </main>
-    
     <footer class="main-footer">
         <div class="developer">
             <a href="https://github.com/Gustalex" target="_blank" rel="noreferrer noopener"> By Gustavo Silva</a>
         </div>
     </footer>
-
     <script>
         document.querySelector('.sidebar-toggle').addEventListener('click', function() {
             document.querySelector('.sidebar').classList.toggle('sidebar-open');
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="../js/catalog.js"></script>
+    <script src="../js/event-detail.js"></script>
 </body>
 </html>

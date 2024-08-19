@@ -103,7 +103,7 @@ class BookDetailController {
                     if (confirm('Are you sure you want to delete this book?')) {
                         const success = await this.deleteBook(book.id);
                         if (success) {
-                            window.location.href = '../views/book-list.html';
+                            window.location.href = '../views/catalog.html';
                         }
                     }
                 });

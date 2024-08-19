@@ -71,7 +71,6 @@ class EventController {
                 await this.retrySendEmail(emailData); 
             }
 
-            alert('Emails sent successfully');
         } catch (error) {
             console.error('Error sending event notifications', error);
             alert('Error sending event notifications');
