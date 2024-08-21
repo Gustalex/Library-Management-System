@@ -43,7 +43,7 @@ Certify yourself to have the following installed on your local environment:
 ### Step 1: Clone the Project Repository
 
 Clone the `libsys` project repository to your local machine:
-    ```bash
+    
 
 ### Step 2: Configure the Django Environment
 
