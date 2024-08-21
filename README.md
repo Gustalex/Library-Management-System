@@ -27,7 +27,7 @@ The project refers to the development of a bookstore management system, as part 
 1. **Implementation of the API in Django**:
    - Creation of an API using Django Rest Framework.
 
-2. **Implementation of the client side with JavaScript**:
+2. **Implementation of the client side with JavaScript, HTML and CSS**:
    - The scripts are responsible for making requests to the API to manage the library system.
    - The client side is a simple HTML page with JavaScript scripts.
    - Axios is used to make HTTP requests to the API.
