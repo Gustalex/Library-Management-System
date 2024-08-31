@@ -2,8 +2,8 @@
 
 ## Table of Contents
 
-- [Description](#Description)
 - [Installation](#Installation)
+- [Documentation](#Documentation)
 
 
 ### College Project : Library Management System 
@@ -87,4 +87,12 @@ Clone the `libsys` project repository to your local machine:
 
 3. **Access the Web Aplication**
    Access the web application opening any HTML file in the `webApp\public\views` directory with live server.
+
+## Documentation
+
+The documentation of the project can be accessed using swagger. To access the documentation, run the project and access the following URL in your browser:
+```bash
+http://127.0.0.1:8000/swagger/
+```
+This will open the Swagger documentation page with all the available endpoints and their descriptions.
 
