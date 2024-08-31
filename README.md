@@ -105,3 +105,13 @@ http://127.0.0.1:8000/swagger/
 ```
 This will open the Swagger documentation page with all the available endpoints and their descriptions.
 
+### Author
+Gustavo Alexandre dos Santos Silva
+```bash
+https://github.com/Gustalex
+```
+
+### Presentation
+```bash
+https://docs.google.com/presentation/d/1lTrAgnxoIScQDJ9PPbZeb_38I-5CW0dpY2qDC4S4rPY/edit?usp=sharing
+```
