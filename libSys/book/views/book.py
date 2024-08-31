@@ -17,19 +17,19 @@ class BookViewSet(ModelViewSet):
     def perform_create(self, serializer):
         try:
             isbn = serializer.validated_data['isbn']
-            existing_book = self.get_existing_book(isbn)
+            existing_book = self._get_existing_book(isbn)
             
             if existing_book:
-                self.update_existing_book_stock(existing_book)
+                self._update_existing_book_stock(existing_book)
             else:
-                self.create_new_book_and_stock(serializer)
+                self._create_new_book_and_stock(serializer)
         except Exception as e:
             return Response({'detail': f'Ocorreu um erro: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def get_existing_book(self, isbn):
+    def _get_existing_book(self, isbn):
         return Book.objects.filter(isbn=isbn).first()
 
-    def update_existing_book_stock(self, book):
+    def _update_existing_book_stock(self, book):
         try:
             estoque = Estoque.objects.filter(book=book).first()
             if estoque:
@@ -41,7 +41,7 @@ class BookViewSet(ModelViewSet):
         except Exception as e:
             raise ValueError(f"Erro ao atualizar estoque: {str(e)}")
 
-    def create_new_book_and_stock(self, serializer):
+    def _create_new_book_and_stock(self, serializer):
         try:
             book = serializer.save()
             Estoque.objects.create(book=book, quantity=1)

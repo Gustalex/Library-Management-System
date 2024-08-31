@@ -64,8 +64,11 @@ class ReserveController {
             if (error.response && error.response.status === 404) {
                 alert('Book is not available for reservation');
             }
+            else if (error.response && error.response.status === 409) {
+                alert('User has a fine and cannot reserve books');
+            }
             else {
-                console.error('Error creating reservation', error);
+                console.error('Error creating reservation', error.response);
                 alert('Failed to create reservation.');
             }
         }

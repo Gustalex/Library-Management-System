@@ -20,22 +20,12 @@ class BorrowViewSet(ViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = BorrowFilter
 
-    def update_popularity_by_book_id(self, book_id):
+    def _update_popularity_by_book_id(self, book_id):
         book = Book.objects.get(id=book_id)
         popularity, created = Popularity.objects.get_or_create(book=book)
         popularity.increment_borrow_count()
-    
-    def check_if_book_is_reserved_by_customer(self, book_id, customer_id):
-        try:
-            book = Book.objects.get(id=book_id)
-            customer = Customer.objects.get(id=customer_id)
-        except (Book.DoesNotExist, Customer.DoesNotExist):
-            return False
         
-        reservations = Reservation.objects.filter(book=book, customer=customer, active=True)
-        return reservations.exists()
-        
-    def inactivate_reservation(self, reservation_id):
+    def _inactivate_reservation(self, reservation_id):
         try:
             reservation = Reservation.objects.get(id=reservation_id)
             reservation.inactivate_reservation()
@@ -61,9 +51,9 @@ class BorrowViewSet(ViewSet):
                 return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Customer has a fine to pay'})
             reservation = find_reservation_by_book_and_customer(book.id, customer.id)
             if reservation:
-                self.inactivate_reservation(reservation.id)
+                self._inactivate_reservation(reservation.id)
                 borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
-                self.update_popularity_by_book_id(book.id)
+                self._update_popularity_by_book_id(book.id)
                 return return_response(request, status.HTTP_201_CREATED, {'message': 'Book borrowed successfully'})
 
             if check_stock(book.id):
@@ -72,7 +62,7 @@ class BorrowViewSet(ViewSet):
                     return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book is not available'})
                 
                 borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
-                self.update_popularity_by_book_id(book.id)
+                self._update_popularity_by_book_id(book.id)
                 estoque.decrement_quantity()
                 estoque.set_status()
                 estoque.save()
