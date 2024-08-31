@@ -18,6 +18,15 @@ This Project is a part of my college project. The main aim of this project is to
 - **JavaScript**:
   - Axios: Used to make HTTP requests from the client side to the API.
 
+- **HTML and CSS**:
+   - Used to create the client side of the application.
+
+- **SQLite**:
+   - Database used to store the data of the library system.
+
+- **Swagger**:
+   - Used to document the API.
+
 #### Project Finality
 
 The project refers to the development of a bookstore management system, as part of the evaluation process for the Software Project course taught by Professor Dr. Baldoíno Fonseca dos Santos Neto at the Federal University of Alagoas (UFAL). The main objective of the project is to create a system that allows the management of books, customers, reservations and the borrowing process while put into practice the concepts learned during the course.
