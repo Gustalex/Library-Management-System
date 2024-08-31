@@ -27,7 +27,7 @@ The project refers to the development of a bookstore management system, as part 
 1. **Implementation of the API in Django**:
    - Creation of an API using Django Rest Framework.
 
-2. **Implementation of the client side with JavaScript**:
+2. **Implementation of the client side with JavaScript, HTML and CSS**:
    - The scripts are responsible for making requests to the API to manage the library system.
    - The client side is a simple HTML page with JavaScript scripts.
    - Axios is used to make HTTP requests to the API.
@@ -43,7 +43,7 @@ Certify yourself to have the following installed on your local environment:
 ### Step 1: Clone the Project Repository
 
 Clone the `libsys` project repository to your local machine:
-    ```bash
+    
 
 ### Step 2: Configure the Django Environment
 
@@ -86,5 +86,5 @@ Clone the `libsys` project repository to your local machine:
 
 
 3. **Access the Web Aplication**
-   Access the web application opening any HTML file in the `webApp\views` directory with live server.
+   Access the web application opening any HTML file in the `webApp\public\views` directory with live server.
 
