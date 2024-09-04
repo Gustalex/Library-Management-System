@@ -85,8 +85,12 @@ Clone the `libsys` project repository to your local machine:
 
    If it is the first time you are running the project, you will need to create the database and run the migrations:
    ```bash
-    python manage.py migrate
-    ```
+   python manage.py makemigrations
+   ```
+  Then
+  ```bash
+  python manage.py migrate
+  ```
 
    Run the Django development server using the `manage.py` script:
    ```bash
