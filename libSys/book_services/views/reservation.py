@@ -3,13 +3,15 @@ from rest_framework.decorators import action
 from rest_framework import status
 from django.db import transaction
 
-from book_services.helper import return_response, check_stock
+from book_services.helper import return_response
 from book_services.models import Reservation
 from book_services.serializers import ReservationSerializer
+from book_services.factories import get_reservation_creator
+from book_services.templates import ReservationTemplate
+
 
 from user.models import Customer
 from book.models import Book, Estoque
-from fine.models import Fine
 
 from django_filters.rest_framework import DjangoFilterBackend
 from book_services.filters import ReservationFilter
@@ -18,7 +20,7 @@ class ReservationViewSet(ViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = ReservationFilter
     
-    @action(detail=True, methods=['POST'])
+    @action(detail=False, methods=['POST'])
     def do_reservation(self, request):
         try:
             book = Book.objects.get(id=request.data['book_id'])
@@ -27,23 +29,16 @@ class ReservationViewSet(ViewSet):
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book not found'})
         except Customer.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Customer not found'})
-
+       
+        reservation_template = ReservationTemplate()
+        
         with transaction.atomic():
-            fine=Fine.objects.filter(customer=customer)
-            if fine.exists():
-                return return_response(request, status.HTTP_409_CONFLICT, {'message': 'Customer has fine'})
-            
-            if not check_stock(book.id):
-                return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book not available'})
-            
-            reservation = Reservation.objects.create(book=book, customer=customer)
-            
-            estoque=Estoque.objects.get(book=book)
-            
-            estoque.decrement_quantity()
-            estoque.set_status()
-           
-            return return_response(request, status.HTTP_201_CREATED, {'message': 'Reservation created', 'reservation_id': reservation.id})
+            try:
+                reservation_strategy = get_reservation_creator()
+                reservation = reservation_template.reserve(book, customer, reservation_strategy)
+                return return_response(request, status.HTTP_201_CREATED, {'message': 'Reservation created'})
+            except Exception as e:
+                return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': str(e)})
 
     @action(detail=True, methods=['DELETE'])
     def delete_reservation(self, request, pk=None):

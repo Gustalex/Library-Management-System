@@ -4,8 +4,10 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import action
 from rest_framework import status
 
-from book_services.helper import return_response, find_reservation_by_book_and_customer, check_stock
-from book_services.models import Borrow, Reservation, Popularity
+from book_services.helper import return_response, check_stock
+from book_services.models import Borrow, Reservation
+from book_services.factories import get_borrow_creator 
+from book_services.templates import BorrowTemplate
 
 from user.models import Customer
 from book.models import Book, Estoque
@@ -20,19 +22,6 @@ class BorrowViewSet(ViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = BorrowFilter
 
-    def _update_popularity_by_book_id(self, book_id):
-        book = Book.objects.get(id=book_id)
-        popularity, created = Popularity.objects.get_or_create(book=book)
-        popularity.increment_borrow_count()
-        
-    def _inactivate_reservation(self, reservation_id):
-        try:
-            reservation = Reservation.objects.get(id=reservation_id)
-            reservation.inactivate_reservation()
-        except Reservation.DoesNotExist:
-            return return_response(None, status.HTTP_404_NOT_FOUND, {'message': 'Reservation not found'})
-    
-    
     @action(detail=True, methods=['POST'])
     def do_borrow(self, request, pk=None):
         try:
@@ -49,27 +38,20 @@ class BorrowViewSet(ViewSet):
             fine=Fine.objects.filter(customer=customer)
             if fine.exists():
                 return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': 'Customer has a fine to pay'})
-            reservation = find_reservation_by_book_and_customer(book.id, customer.id)
-            if reservation:
-                self._inactivate_reservation(reservation.id)
-                borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
-                self._update_popularity_by_book_id(book.id)
-                return return_response(request, status.HTTP_201_CREATED, {'message': 'Book borrowed successfully'})
-
-            if check_stock(book.id):
-                estoque = Estoque.objects.filter(book=book, quantity__gt=0, status__in=['Available', 'Last Unit']).first()
-                if not estoque:
-                    return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book is not available'})
-                
-                borrow = Borrow.objects.create(book=book, customer=customer, initial_date=initial_date, final_date=final_date)
-                self._update_popularity_by_book_id(book.id)
-                estoque.decrement_quantity()
-                estoque.set_status()
-                estoque.save()
-
-                return return_response(request, status.HTTP_201_CREATED, {'message': 'Book borrowed successfully'})
             
-            return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book is not available'})
+            borrow_template = BorrowTemplate()
+            
+            if not check_stock(book.id) and not Reservation.objects.filter(book=book, customer=customer, active=True).exists():
+                return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book is not available'})
+                            
+            try:
+                borrow_strategy = get_borrow_creator(book, customer)
+                borrow = borrow_template.borrow(book, customer, initial_date, final_date, borrow_strategy)
+                return return_response(request, status.HTTP_201_CREATED, {'message': 'Borrow created'})
+            except Exception as e:
+                return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': str(e)})
+            
+        return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Book is not available'})
                 
                 
     @action(detail=True, methods=['DELETE'])
