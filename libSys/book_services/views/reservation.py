@@ -35,7 +35,7 @@ class ReservationViewSet(ViewSet):
         with transaction.atomic():
             try:
                 reservation_strategy = get_reservation_creator()
-                reservation = reservation_template.reserve(book, customer, reservation_strategy)
+                reservation = reservation_template.handle(book, customer, reservation_strategy)
                 return return_response(request, status.HTTP_201_CREATED, {'message': 'Reservation created'})
             except Exception as e:
                 return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': str(e)})

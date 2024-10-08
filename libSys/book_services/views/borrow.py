@@ -46,7 +46,7 @@ class BorrowViewSet(ViewSet):
                             
             try:
                 borrow_strategy = get_borrow_creator(book, customer)
-                borrow = borrow_template.borrow(book, customer, initial_date, final_date, borrow_strategy)
+                borrow = borrow_template.handle(book, customer,borrow_strategy, initial_date, final_date)
                 return return_response(request, status.HTTP_201_CREATED, {'message': 'Borrow created'})
             except Exception as e:
                 return return_response(request, status.HTTP_400_BAD_REQUEST, {'message': str(e)})
