@@ -8,13 +8,14 @@ from book_services.models import Reservation
 from book_services.serializers import ReservationSerializer
 from book_services.factories import get_reservation_creator
 from book_services.templates import ReservationTemplate
-
+from book_services.strategies import ReservationDeleteStrategy
 
 from user.models import Customer
 from book.models import Book, Estoque
 
 from django_filters.rest_framework import DjangoFilterBackend
 from book_services.filters import ReservationFilter
+from rest_framework.response import Response
 
 class ReservationViewSet(ViewSet):
     filter_backends = [DjangoFilterBackend]
@@ -46,14 +47,11 @@ class ReservationViewSet(ViewSet):
             reservation = Reservation.objects.get(id=pk)
         except Reservation.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Reservation not found'})
-        
-        estoque=Estoque.objects.get(book=reservation.book)
-        
-        estoque.increment_quantity()
-        estoque.set_status()
-        reservation.inactivate_reservation()
-        reservation.delete()
-        return return_response(request, status.HTTP_200_OK, {'message': 'Reservation canceled'})
+
+        estoque = Estoque.objects.get(book=reservation.book)
+        strategy = ReservationDeleteStrategy(estoque, reservation)
+        result = strategy.delete_instance()
+        return Response(result, status=result['status_code'])
     
     @action(detail=True, methods=['GET'])
     def get_reservation(self, request, pk=None):

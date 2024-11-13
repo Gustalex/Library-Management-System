@@ -8,6 +8,7 @@ from book_services.helper import return_response, check_stock
 from book_services.models import Borrow, Reservation
 from book_services.factories import get_borrow_creator 
 from book_services.templates import BorrowTemplate
+from book_services.strategies import BorrowDeleteStrategy
 
 from user.models import Customer
 from book.models import Book, Estoque
@@ -17,6 +18,7 @@ from book_services.serializers import BorrowSerializer
 
 from django_filters.rest_framework import DjangoFilterBackend
 from book_services.filters import BorrowFilter
+from rest_framework.response import Response
 
 class BorrowViewSet(ViewSet):
     filter_backends = [DjangoFilterBackend]
@@ -60,13 +62,11 @@ class BorrowViewSet(ViewSet):
             borrow = Borrow.objects.get(id=pk)
         except Borrow.DoesNotExist:
             return return_response(request, status.HTTP_404_NOT_FOUND, {'message': 'Borrow not found'})
-        with transaction.atomic():
-            estoque=Estoque.objects.get(book=borrow.book)
-            estoque.increment_quantity()
-            estoque.set_status()
-            borrow.cancel_borrow()
-            borrow.delete()
-        return return_response(request, status.HTTP_200_OK, {'message': 'Borrow deleted'})
+
+        estoque = Estoque.objects.get(book=borrow.book)
+        strategy = BorrowDeleteStrategy(estoque, borrow)
+        result = strategy.delete_instance()
+        return Response(result, status=result['status_code'])
     
     @action(detail=False, methods=['GET'])
     def list_borrows(self, request):
